@@ -1,0 +1,44 @@
+buildscript {
+    
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        google()
+    }
+    dependencies {
+        
+
+    }
+}
+
+allprojects {
+    apply plugin: "eclipse"
+    version = '1.0'
+    ext {
+        appName = "gdx-psx"
+        gdxVersion = '1.10.0'
+		gltfVersion = 'master-SNAPSHOT'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        gradlePluginPortal()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+		maven { url 'https://jitpack.io' }
+    }
+}
+
+project(":core") {
+    apply plugin: "java-library"
+
+    dependencies {
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        api "com.github.mgsx-dev.gdx-gltf:gltf:$gltfVersion"
+    }
+}
