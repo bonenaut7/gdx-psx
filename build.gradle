@@ -9,6 +9,11 @@
 // Apply the java-library plugin to add support for Java Library
 apply plugin: 'java-library'
 
+ext {
+	gdxVersion = '1.10.0'
+	gltfVersion = 'master-SNAPSHOT'
+}
+
 // In this section you declare where to find the dependencies of your project
 repositories {
     mavenLocal()
@@ -24,9 +29,4 @@ dependencies {
 	api "com.badlogicgames.gdx:gdx:$gdxVersion"
 	api "com.github.mgsx-dev.gdx-gltf:gltf:$gltfVersion"
 	implementation 'com.github.jitpack:gradle-simple:1.0'
-}
-
-ext {
-	gdxVersion = '1.10.0'
-	gltfVersion = 'master-SNAPSHOT'
 }
