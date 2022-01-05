@@ -1,7 +1,4 @@
 buildscript {
-    project.version = '0.1.0'
-	project.group = "by.fxg"
-
     repositories {
         mavenLocal()
         mavenCentral()
@@ -10,14 +7,8 @@ buildscript {
         google()
     }
     dependencies {
-        
-
+        implementation 'com.github.jitpack:gradle-simple:1.0"
     }
-}
-
-apply plugin: "java"
-java {
-	withSourcesJar()
 }
 
 allprojects {
