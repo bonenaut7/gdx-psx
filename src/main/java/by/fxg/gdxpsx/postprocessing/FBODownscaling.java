@@ -189,7 +189,6 @@ public final class FBODownscaling {
 	 *  @param sizeY - size of renderable image in <b>Y</b> dimension
 	 */
 	public void drawFrame(int x, int y, int sizeX, int sizeY) {
-		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
 		this.batch.begin();
 		this.batch.draw(this.lastBufferTexture, x, y, sizeX, sizeY);
