@@ -17,17 +17,17 @@ If you have questions or suggestions for this project, or you want to just chat 
 1. Add JitPack repository in your root build.gradle at the end of repositories:
 ```
 allprojects {
-  repositories {
-    ...
-    maven { url 'https://jitpack.io' }
-  }
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
 }
 ```
 2. Add the psx-gdx dependency
 ```
 dependencies {
-  ...
-  implementation 'com.github.fxgaming:gdx-psx:0.1.0-beta'
+    ...
+    implementation 'com.github.fxgaming:gdx-psx:0.1.0-beta'
 }
 ```
 
