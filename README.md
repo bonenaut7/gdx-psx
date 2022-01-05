@@ -37,7 +37,7 @@ the demo before starting work with library!
 
 ### Textures (Texture shrinking)
 Library provides tool that helping you process textures and and downgrade their quality! <br/>
-Fast texture processing:
+Fast texture processing: <br/>
 `TextureTransformer.shrinkTexture(Pixmap, ResizeType, textureSizeFactor, colorDepthFactor);` <br/>
 or with recommended parameters: <br/>
 `TextureTransformer.shrinkTexture(pixmap, ResizeType.EQUAL, 128f, 4f);` <br/>
