@@ -45,6 +45,7 @@ public final class PSXPostProcessing {
 	
 	//===================[CONFIGURATION]======================
 	private float[] flags = {1, 1, 1, -1};
+	
 	//[1] Viewport settings / Resolution downscaling
 	private float[] resolution = {3, 640, 360};
 	

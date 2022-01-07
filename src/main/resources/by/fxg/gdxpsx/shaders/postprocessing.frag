@@ -21,19 +21,19 @@ float ditherColorChannel(float color, float ditherThreshold, float ditherStep) {
 
 void main() {
 	vec2 iTexCoords = v_texCoords;
-	if (u_flags[1] > -0.5) {
+	if (u_flags[1] > 0) {
 		float dx = u_resolution[0] * (1.0f / u_resolution[1]);
 		float dy = u_resolution[0] * (1.0f / u_resolution[2]);
 		iTexCoords = vec2(dx * floor(v_texCoords.x / dx), dy * floor(v_texCoords.y / dy));
 	}
 	vec4 iFragColor = texture(u_texture, iTexCoords);
-	if (u_flags[2] > -0.5) {
+	if (u_flags[2] > 0) {
 		vec3 colorStep = 1.0f / max(vec3(u_colorDepth[0], u_colorDepth[1], u_colorDepth[2]), 1.0f);
 		iFragColor.r = ditherColorChannel(iFragColor.r, 0.5f, colorStep.r);
 		iFragColor.g = ditherColorChannel(iFragColor.g, 0.5f, colorStep.g);
 		iFragColor.b = ditherColorChannel(iFragColor.b, 0.5f, colorStep.b);
 	}
-	if (u_flags[3] > -0.5) {
+	if (u_flags[3] > 0) {
 		float ditherThreshold = 0;
 		if (u_ditheringMatrix == 0) { ditherThreshold = dither2x2[int(mod(v_position.x, 2) + mod(v_position.y, 2) * 2)] * 0.25F; }
 		else if (u_ditheringMatrix == 1) { ditherThreshold = dither4x4[int(mod(v_position.x, 4) + mod(v_position.y, 4) * 4)] * 0.0625F; }
@@ -45,5 +45,5 @@ void main() {
 		iFragColor.b = ditherColorChannel(iFragColor.b, ditherThreshold, ditherStep.b);
 	}
 	gl_FragColor = iFragColor;
-	if (u_flags[0] > -0.5 && gl_FragColor.a < 0.5) { discard; }
+	if (u_flags[0] > 0 && gl_FragColor.a < 0.5) { discard; }
 }

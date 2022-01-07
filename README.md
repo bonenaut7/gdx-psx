@@ -27,7 +27,7 @@ allprojects {
 ```
 dependencies {
     ...
-    implementation 'com.github.fxgaming:gdx-psx:0.1.0a'
+    implementation 'com.github.fxgaming:gdx-psx:0.1.1a'
 }
 ```
 
