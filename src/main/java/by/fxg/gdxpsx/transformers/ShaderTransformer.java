@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 See AUTHORS file.
+ * Copyright 2021 Matvey Zholudz
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import com.badlogic.gdx.math.Vector2;
  *  @author fxgaming (FXG)
  */
 public class ShaderTransformer {
-	public static final float DEFAULT_DOWNSCALE_FACTOR = 2.0f;
+	public static final float DEFAULT_DOWNSCALE_FACTOR = 3.0f;
 	
 	protected final Pattern regexPattern = Pattern.compile(".*void main\\(\\) \\{.*", Pattern.MULTILINE);
 	protected String vertexShader;
@@ -162,29 +162,31 @@ public class ShaderTransformer {
 	protected String injectVertexShader() {
 		Matcher matcher = this.regexPattern.matcher(this.vertexShader);
 		if (matcher.find()) {
-			String[] vertexShaderParts = this.vertexShader.split(Pattern.quote(matcher.group()));
-			StringBuilder stringBuilder = new StringBuilder();
-			stringBuilder.append("#define GDXPSX_JITTER\n");
-			stringBuilder.append(vertexShaderParts[0]).append("void main() {");
-			vertexShaderParts = vertexShaderParts[1].split(Pattern.quote("}"));
-			for (int i = 0; i != vertexShaderParts.length - 1; i++) stringBuilder.append(vertexShaderParts[i]).append(i < vertexShaderParts.length - 2 ? "}" : "");
+			String[] shaderMod = Gdx.files.classpath("by/fxg/gdxpsx/shaders/psx.3d.vert").readString().split(Pattern.quote("//[split]//"));
 			switch (this.transformType) {
-				case RESOLUTION_SNAP_JITTER: {
-					stringBuilder.append("#ifdef GDXPSX_JITTER\n");
-					stringBuilder.append("vec2 gdxpsxRes = vec2(").append(Math.max(this.resolution.x / this.downscaleFactor, 1)).append(", ").append(Math.max(this.resolution.y / this.downscaleFactor, 1)).append(");\n");
-					stringBuilder.append("float gdxpsxCamDist = clamp(gl_Position.w, -1, 1000);\n");
-					stringBuilder.append("gl_Position.xy = round(gl_Position.xy * (gdxpsxRes / gdxpsxCamDist)) / (gdxpsxRes / gdxpsxCamDist);\n");
-					stringBuilder.append("#endif\n");
+				default: {
+					String $VEC0 = String.format("%.2f! %.2f", Math.max(1, this.resolution.x / this.downscaleFactor), Math.max(1, this.resolution.y / this.downscaleFactor));
+					shaderMod[1] = shaderMod[1].replaceAll(Pattern.quote("$VEC0"), $VEC0.replaceAll(Pattern.quote(","), ".").replaceAll("!", ","));
 				} break;
 			}
-			stringBuilder.append("}").append(vertexShaderParts[vertexShaderParts.length - 1]);
+			String[] vertexShaderParts = this.vertexShader.split(Pattern.quote(matcher.group()));
+			StringBuilder stringBuilder = new StringBuilder("#define GDXPSX_").append(this.transformType.name());
+			stringBuilder.append(shaderMod[0]).append(vertexShaderParts[0]).append("void main() {");
+			vertexShaderParts = vertexShaderParts[1].split(Pattern.quote("}"));
+			for (int i = 0; i != vertexShaderParts.length - 1; i++) stringBuilder.append(vertexShaderParts[i]).append(i < vertexShaderParts.length - 2 ? "}" : "");
+			stringBuilder.append(shaderMod[1]).append("}").append(vertexShaderParts[vertexShaderParts.length - 1]);
 			return stringBuilder.toString();
 		} else System.out.println("[GDX-PSX] Unnable to patch shaders because they are not matching pattern.");
 		return this.vertexShader;
+		//return Gdx.files.classpath("by/fxg/gdxpsx/shaders/psx.aff.vert").readString();
+	}
+	
+	protected String injectFragmentShader() {
+		return Gdx.files.classpath("by/fxg/gdxpsx/shaders/psx.aff.frag").readString();
 	}
 
 	public enum TransformType {
-		//CAMERA_DISTANCE_JITTER,
+		CAMERA_DISTANCE_JITTER,
 		RESOLUTION_SNAP_JITTER;
 	}
 }

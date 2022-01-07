@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 See AUTHORS file.
+ * Copyright 2021 Matvey Zholudz
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.Texture;
  *  This class using for texture modifying (<b>Color depth change, Resizing</b>).
  *  @author fxgaming (FXG)
  */
-//TODO: add Dithering
 public final class TextureTransformer {
 	public static final ResizeType DEFAULT_RESIZE_TYPE = ResizeType.EQUAL;
 	public static final float DEFAULT_TEXTURE_SIZE = 128;
@@ -139,7 +138,7 @@ public final class TextureTransformer {
 				r -= r % colorDepthFactor;
 				g -= g % colorDepthFactor;
 				b -= b % colorDepthFactor;
-				pixmap.drawPixel(x, y, Color.rgba8888(r / 256f, g / 256f, b / 256f, 1.0F));
+				pixmap.drawPixel(x, y, Color.rgba8888(r / 256f, g / 256f, b / 256f, (value & 0x000000ff) / 256f));
 			}
 		}
 		return pixmap;

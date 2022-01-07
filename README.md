@@ -67,15 +67,14 @@ To use `ShaderTransformer` with `PBRShaderProvider` use `PBRShaderTransformer`.
 
 ### Post-processing (Downscaling, Color depth, Screen dithering)
 Also library provides few things to work with post-processing!
-P.S. `FBODownscaling` will be renamed in future!
 
 1. Create and customize post processing tool
 ```java
-FBODownscaling postProcessing = new FBODownscaling(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-postProcessing.setIntensity(2f); //Downscaling intensity
+PSXPostProcessing postProcessing = new PSXPostProcessing(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+postProcessing.setDownscalingIntensity(2f);
 postProcessing.setColorDepth(64, 64, 64);
-postProcessing.setDitherMatrix(DitherMatrix.Dither4x4);
-postProcessing.init(); //use init() method after creating and customizing object.
+postProcessing.setDitheringMatrix(DitherMatrix.Dither4x4);
+postProcessing.setFlagState(FlagType.DITHERING, true);
 ```
 2. Put this in the render loop
 ```java
