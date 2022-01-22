@@ -13,6 +13,9 @@ If you have questions or suggestions for this project, or you want to just chat 
 - Texture shrink(compression)
 - Resolution downscaling
 
+## Demo:
+You can look at demo [here](https://m3.fxg.by/gdxpsx.mp4)
+
 # Install
 1. Add JitPack repository in your root build.gradle at the end of repositories:
 ```
