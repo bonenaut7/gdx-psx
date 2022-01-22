@@ -27,7 +27,7 @@ allprojects {
 ```
 dependencies {
     ...
-    implementation 'com.github.fxgaming:gdx-psx:0.1.1a'
+    implementation 'com.github.fxgaming:gdx-psx:0.1.2a'
 }
 ```
 
@@ -40,14 +40,14 @@ Library provides tool that helping you process textures and and downgrade their 
 Fast texture processing: <br/>
 `TextureTransformer.shrinkTexture(Pixmap, ResizeType, textureSizeFactor, colorDepthFactor);` <br/>
 or with recommended parameters: <br/>
-`TextureTransformer.shrinkTexture(pixmap, ResizeType.EQUAL, 128f, 4f);` <br/>
+`TextureTransformer.shrinkTexture(pixmap, ResizeType.FORCE, 192f, 32f);` <br/>
 Instead of using `Pixmap` you can use `FileHandle` with your texture's path.
 
 If you need to process bigger amount of textures with specified parameters:
 ```java
 TextureTransformer transformer = new TextureTransformer(); //using recommended parameters by default
 transformer.setResizeType(ResizeType.ACCORDING_TO_HEIGHT);
-transformer.setColorDepthFactor(8f);
+transformer.setColorDepthFactor(32f);
 //...
 Texture newTexture = transformer.shrinkTexture(fileHandle);
 ```
@@ -71,8 +71,8 @@ Also library provides few things to work with post-processing!
 1. Create and customize post processing tool
 ```java
 PSXPostProcessing postProcessing = new PSXPostProcessing(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-postProcessing.setDownscalingIntensity(2f);
-postProcessing.setColorDepth(64, 64, 64);
+postProcessing.setDownscalingIntensity(4f);
+postProcessing.setColorDepth(32f, 32f, 32f);
 postProcessing.setDitheringMatrix(DitherMatrix.Dither4x4);
 postProcessing.setFlagState(FlagType.DITHERING, true);
 ```
