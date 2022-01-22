@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021 Matvey Zholudz
+ * Copyright 2022 Matvey Zholudz
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ import com.badlogic.gdx.graphics.Texture;
  *  @author fxgaming (FXG)
  */
 public final class TextureTransformer {
-	public static final ResizeType DEFAULT_RESIZE_TYPE = ResizeType.EQUAL;
-	public static final float DEFAULT_TEXTURE_SIZE = 128;
-	public static final float DEFAULT_COLOR_DEPTH_FACTOR = 48f;
+	public static final ResizeType DEFAULT_RESIZE_TYPE = ResizeType.FORCE;
+	public static final float DEFAULT_TEXTURE_SIZE = 192f;
+	public static final float DEFAULT_COLOR_DEPTH_FACTOR = 32f;
 	
 	//=======================================================[MULTIPLE USE ACCESS]=====================================================//
 	private ResizeType resizeType;
@@ -45,7 +45,7 @@ public final class TextureTransformer {
 		this.colorDepthFactor = colorDepthFactor;
 	}
 	
-	/** @param colorDepthFactor resize type, check {@link ResizeType} for more information. Default: EQUAL. {@link TextureTransformer#DEFAULT_RESIZE_TYPE} **/
+	/** @param colorDepthFactor resize type, check {@link ResizeType} for more information. Default: FORCE. {@link TextureTransformer#DEFAULT_RESIZE_TYPE} **/
 	public TextureTransformer setResizeType(ResizeType resizeType) {
 		this.resizeType = resizeType;
 		return this;
@@ -118,16 +118,19 @@ public final class TextureTransformer {
 	public static Texture shrinkTexture(Pixmap pixmap, ResizeType resizeType, float textureSize, float colorDepthFactor) {
 		if (pixmap == null || resizeType == null) return null;
 		if (colorDepthFactor > 1) downgradeColorDepth(pixmap, colorDepthFactor);
-		float factor = Math.min(1, resizeType == ResizeType.ACCORDING_TO_WIDTH ? pixmap.getWidth() / textureSize : resizeType == ResizeType.ACCORDING_TO_HEIGHT ? pixmap.getHeight() / textureSize : textureSize);
-		int sizeX = textureSize > 1 ? (int)Math.max(1, pixmap.getWidth() / factor) : pixmap.getWidth(), sizeY = textureSize > 0 ? (int)Math.max(1, pixmap.getHeight() / factor) : pixmap.getHeight();
-		Pixmap downscaled = new Pixmap(sizeX, sizeY, Format.RGBA8888);
-		downscaled.drawPixmap(pixmap, 0, 0, pixmap.getWidth(), pixmap.getHeight(), 0, 0, downscaled.getWidth(), downscaled.getHeight());
-		Texture finalTexture = new Texture(downscaled);
-		downscaled.dispose();
-		return finalTexture;
+		if (textureSize > 1 && resizeType != null) {
+			float factor = Math.max(1, resizeType == ResizeType.ACCORDING_TO_WIDTH ? pixmap.getWidth() / textureSize : resizeType == ResizeType.ACCORDING_TO_HEIGHT ? pixmap.getHeight() / textureSize : textureSize);
+			int sizeX = resizeType == ResizeType.FORCE ? (int)textureSize : textureSize > 1 ? (int)Math.max(1, pixmap.getWidth() / factor) : pixmap.getWidth(), sizeY = resizeType == ResizeType.FORCE ? (int)textureSize : textureSize > 0 ? (int)Math.max(1, pixmap.getHeight() / factor) : pixmap.getHeight();
+			Pixmap downscaled = new Pixmap(sizeX, sizeY, Format.RGBA8888);
+			downscaled.drawPixmap(pixmap, 0, 0, pixmap.getWidth(), pixmap.getHeight(), 0, 0, downscaled.getWidth(), downscaled.getHeight());
+			Texture finalTexture = new Texture(downscaled);
+			downscaled.dispose();
+			return finalTexture;
+		}
+		return new Texture(pixmap);
 	}
 	
-	/** To be updated. Absolutely absurd and incorrect. **/
+	/* needs update */
 	private static Pixmap downgradeColorDepth(Pixmap pixmap, float colorDepthFactor) {
 		for (int y = 0; y != pixmap.getHeight(); y++) {
 			for (int x = 0; x != pixmap.getWidth(); x++) {
@@ -145,11 +148,11 @@ public final class TextureTransformer {
 	}
 	
 	/** <br>Used in the texture {@link TextureTransformer#shrinkTexture(Pixmap, ResizeType, float, float)} method for the texture resizing</br>
-	 *  - <b>EQUAL</b> resizing texture by <b>xy / factor</b> method where 'factor' is given argument<br>
+	 *  - <b>FORCE</b> resizing texture by <b>xy / factor</b> method where 'factor' is given argument<br>
 	 *  - <b>ACCORDING_TO_WIDTH</b> resizing texture by <b>factor = x / dimension; xy / factor</b> where 'dimension' is given 'factor' argument<br>
 	 *  - <b>ACCORDING_TO_HEIGHT</b> resizing texture by <b>factor = y / dimension; xy / factor</b> where 'dimension' is given 'factor' argument */
 	public enum ResizeType {
-		EQUAL,
+		FORCE,
 		ACCORDING_TO_WIDTH,
 		ACCORDING_TO_HEIGHT;
 	}

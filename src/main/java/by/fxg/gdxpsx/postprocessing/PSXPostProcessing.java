@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021 Matvey Zholudz
+ * Copyright 2022 Matvey Zholudz
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
  *  @author fxgaming (FXG)
  */
 public final class PSXPostProcessing {
-	public static final float DEFAULT_INTENSITY = 3.0f;
+	public static final float DEFAULT_INTENSITY = 4.0f;
 	public static final float DEFAULT_COLOR_DEPTH = 64.0f;
 	public static final DitherMatrix DEFAULT_DITHER_MATRIX = DitherMatrix.Dither2x2;
 	public static final float DEFAULT_DITHER_DEPTH = 32.0f;
@@ -127,7 +127,7 @@ public final class PSXPostProcessing {
 	 *  @param flagType - type of function
 	 *  @param enabled - state
 	 */
-	public PSXPostProcessing setFlagState(FlagType flagType, boolean enabled) {
+	public PSXPostProcessing setFlagState(boolean enabled, FlagType flagType) {
 		if (flagType != null) {
 			this.flags[flagType.ordinal()] = enabled ? 1f : -1f;
 			this.flushBatch();
@@ -224,13 +224,13 @@ public final class PSXPostProcessing {
 	/** Downscaled image render. Use after {@link #endCapture()} **/
 	public void drawFrame() { this.drawFrame(0, 0, (int)this.resolution[1], (int)this.resolution[2]); }
 
-	/** Downscaled image render. Use after {@link #endCapture()}\
+	/** Downscaled image render. Use after {@link #endCapture()}
 	 *  @param x - start position of render in <b>X</b> dimension
 	 *  @param y - start position of render in <b>Y</b> dimension
 	 */
 	public void drawFrame(int x, int y) { this.drawFrame(x, y, (int)this.resolution[1], (int)this.resolution[2]); };
 	
-	/** Downscaled image render. Use after {@link #endCapture()}\
+	/** Downscaled image render. Use after {@link #endCapture()}
 	 *  @param x - start position of render in <b>X</b> dimension
 	 *  @param y - start position of render in <b>Y</b> dimension
 	 *  @param sizeX - size of renderable image in <b>X</b> dimension
@@ -238,6 +238,25 @@ public final class PSXPostProcessing {
 	 */
 	public void drawFrame(int x, int y, int sizeX, int sizeY) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
+		this.batch.begin();
+		this.batch.draw(this.lastBufferTexture, x, y, sizeX, sizeY);
+		this.batch.end();
+	}
+
+	/** <b>WARNING! This method setting uniforms every call, used for debugging!</b><br>
+	 *  Downscaled image render. Use after {@link #endCapture()}
+	 *  @param x - start position of render in <b>X</b> dimension
+	 *  @param y - start position of render in <b>Y</b> dimension
+	 *  @param sizeX - size of renderable image in <b>X</b> dimension
+	 *  @param sizeY - size of renderable image in <b>Y</b> dimension
+	 */
+	public void drawDebugFrame(int x, int y, int sizeX, int sizeY) {
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
+		this.program.setUniform1fv("u_flags", this.flags, 0, 4);
+		this.program.setUniform1fv("u_resolution", this.resolution, 0, 3);
+		this.program.setUniform1fv("u_colorDepth", this.colorDepth, 0, 3);
+		this.program.setUniformi("u_ditheringMatrix", this.ditheringMatrix.ordinal());
+		this.program.setUniformf("u_ditherDepth", this.ditherDepth);
 		this.batch.begin();
 		this.batch.draw(this.lastBufferTexture, x, y, sizeX, sizeY);
 		this.batch.end();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021 Matvey Zholudz
+ * Copyright 2022 Matvey Zholudz
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import com.badlogic.gdx.math.Vector2;
  *  @author fxgaming (FXG)
  */
 public class ShaderTransformer {
-	public static final float DEFAULT_DOWNSCALE_FACTOR = 3.0f;
+	public static final float DEFAULT_JITTER_FACTOR = 4.0f;
 	
 	protected final Pattern regexPattern = Pattern.compile(".*void main\\(\\) \\{.*", Pattern.MULTILINE);
 	protected String vertexShader;
@@ -62,7 +62,7 @@ public class ShaderTransformer {
 	 *  @param fragmentShader - fragment shader for transform
 	 */
 	public ShaderTransformer(String vertexShader, String fragmentShader) {
-		this(DEFAULT_DOWNSCALE_FACTOR, vertexShader, fragmentShader);
+		this(DEFAULT_JITTER_FACTOR, vertexShader, fragmentShader);
 	}
 	
 	/** Creating transformer with given parameters
@@ -150,7 +150,7 @@ public class ShaderTransformer {
 	 */
 	public ShaderProvider createShaderProvider(DefaultShader.Config config) {
 		String vertexShader = this.injectVertexShader();
-		String fragmentShader = this.fragmentShader;
+		String fragmentShader = this.injectFragmentShader();
 		if (config != null) {
 			config.vertexShader = vertexShader;
 			config.fragmentShader = fragmentShader;
@@ -178,11 +178,10 @@ public class ShaderTransformer {
 			return stringBuilder.toString();
 		} else System.out.println("[GDX-PSX] Unnable to patch shaders because they are not matching pattern.");
 		return this.vertexShader;
-		//return Gdx.files.classpath("by/fxg/gdxpsx/shaders/psx.aff.vert").readString();
 	}
 	
 	protected String injectFragmentShader() {
-		return Gdx.files.classpath("by/fxg/gdxpsx/shaders/psx.aff.frag").readString();
+		return this.fragmentShader;
 	}
 
 	public enum TransformType {
