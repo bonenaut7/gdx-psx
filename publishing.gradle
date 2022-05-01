@@ -1,6 +1,17 @@
+javadoc {
+    failOnError false
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
+java {
+    withJavadocJar()
+}
+
 publishing {
     publications {
-        gdxTinyVG(MavenPublication) {
+        gdxPsx(MavenPublication) {
             pom {
                 name = "gdx-psx"
                 description = "LibGDX PSX-style render features"
