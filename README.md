@@ -5,7 +5,6 @@
 
 **gdx-psx** its a library for [**LibGDX**](https://github.com/libgdx/libgdx) designed to assist you in simulation of PlayStation 1
 graphics with few simple steps!
-
 If you have questions or suggestions for this project, or you want to just chat about it - welcome to our [discord](https://discord.gg/2FqQQxyFS8).
 
 ## Features:
