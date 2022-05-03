@@ -45,7 +45,7 @@ public final class PSXPostProcessing {
 	private Texture ditheringTexture = null;
 	
 	//===================[CONFIGURATION]======================
-	private float[] flags = {1, 1, 1, -1};
+	private float[] flags = {1, 1, 1, 1};
 	
 	//[1] Viewport settings / Resolution downscaling
 	private float[] resolution = {3, 640, 360};
@@ -55,7 +55,7 @@ public final class PSXPostProcessing {
 	
 	//[3] Dithering / Image dithering
 	private DitheringMatrix ditheringMatrix;
-	private float[] dithering = {1, 36, 4};
+	private float[] dithering = {1, 8, 8};
 	//===================[CONFIGURATION]======================
 
 	/** Creating downscaling framebuffer with default parameters **/
