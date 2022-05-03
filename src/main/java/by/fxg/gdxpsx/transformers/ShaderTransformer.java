@@ -42,7 +42,7 @@ public class ShaderTransformer {
 	
 	protected TransformType transformType;
 	protected Vector2 resolution;
-	protected float downscaleFactor;
+	protected float jitterFactor;
 	
 	/** Creating transformer with libgdx {@link DefaultShader} and default transformer settings */
 	public ShaderTransformer() {
@@ -89,14 +89,14 @@ public class ShaderTransformer {
 	 *	@param transformType - vertex jitter type
 	 *  @param resolutionWidth - width of viewport
 	 *  @param resolutionHeight - height of viewport
-	 *  @param downscaleFactor - jitter factor
+	 *  @param jitterFactor - wobbleness factor
 	 *  @param vertexShader - vertex shader for transform
 	 *  @param fragmentShader - fragment shader for transform
 	 */
-	public ShaderTransformer(TransformType transformType, float resolutionWidth, float resolutionHeight, float downscaleFactor, String vertexShader, String fragmentShader) {
+	public ShaderTransformer(TransformType transformType, float resolutionWidth, float resolutionHeight, float jitterFactor, String vertexShader, String fragmentShader) {
 		this.transformType = transformType;
 		this.resolution = new Vector2(resolutionWidth, resolutionHeight);
-		this.downscaleFactor = downscaleFactor;
+		this.jitterFactor = jitterFactor;
 		this.vertexShader = vertexShader;
 		this.fragmentShader = fragmentShader;
 	}
@@ -124,9 +124,9 @@ public class ShaderTransformer {
 		return this;
 	}
 	
-	/** @param downscaleFactor - factor of vertex jitter. Default: 2.0 **/
-	public ShaderTransformer setFactor(float downscaleFactor) {
-		this.downscaleFactor = Math.max(1f, downscaleFactor);
+	/** @param jitterFactor - factor of vertex jitter. Default: 2.0 **/
+	public ShaderTransformer setFactor(float jitterFactor) {
+		this.jitterFactor = Math.max(1f, jitterFactor);
 		return this;
 	}
 	
@@ -140,7 +140,7 @@ public class ShaderTransformer {
 	public float getHeight() { return this.resolution.y; }
 	
 	/** @return factor of vertex jitter **/
-	public float getFactor() { return this.downscaleFactor; }
+	public float getFactor() { return this.jitterFactor; }
 	
 	/** @return <b>ShaderProvider</b> with modified shader. **/
 	public ShaderProvider createShaderProvider() { return this.createShaderProvider(null); }
@@ -165,7 +165,7 @@ public class ShaderTransformer {
 			String[] shaderMod = Gdx.files.classpath("by/fxg/gdxpsx/shaders/psx.3d.vert").readString().split(Pattern.quote("//[split]//"));
 			switch (this.transformType) {
 				default: {
-					String $VEC0 = String.format("%.2f! %.2f", Math.max(1, this.resolution.x / this.downscaleFactor), Math.max(1, this.resolution.y / this.downscaleFactor));
+					String $VEC0 = String.format("%.2f! %.2f", Math.max(1, this.resolution.x / this.jitterFactor), Math.max(1, this.resolution.y / this.jitterFactor));
 					shaderMod[1] = shaderMod[1].replaceAll(Pattern.quote("$VEC0"), $VEC0.replaceAll(Pattern.quote(","), ".").replaceAll("!", ","));
 				} break;
 			}

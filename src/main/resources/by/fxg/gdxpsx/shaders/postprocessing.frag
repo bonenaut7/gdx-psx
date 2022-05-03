@@ -1,8 +1,3 @@
-const float dither2x2[4] = {0, 3, 2, 1};
-const float dither4x4[16] = {0,  8,  2,  10, 12, 4,  14, 6, 3,  11, 1,  9, 15, 7, 13, 5};
-const float ditherScreenDoor[16] = {1, 9, 3, 11, 13, 5, 15, 7, 4, 12, 2, 10, 16, 8, 14, 6};
-const float ditherIndex8x8[64] = {0, 32, 8, 40, 2, 34, 10, 42, 48, 16, 56, 24, 50, 18, 58, 26, 12, 44, 4, 36, 14, 46, 6, 38, 60, 28, 52, 20, 62, 30, 54, 22, 3, 35, 11, 43, 1, 33, 9, 41, 51, 19, 59, 27, 49, 17, 57, 25, 15, 47, 7, 39, 13, 45, 5, 37, 63, 31, 55, 23, 61, 29, 53, 21};
-
 varying vec2 v_texCoords;
 varying vec2 v_position;
 uniform sampler2D u_texture;
@@ -10,40 +5,90 @@ uniform sampler2D u_texture;
 uniform float u_flags[4];
 uniform float u_resolution[3];
 uniform float u_colorDepth[3];
-uniform int u_ditheringMatrix;
-uniform float u_ditherDepth;
+uniform float u_dithering[3];
+uniform sampler2D u_ditherTexture;
 
+//used for color channel degradation lol
 float ditherColorChannel(float color, float ditherThreshold, float ditherStep) { 
 	float distance = mod(color, ditherStep);
 	float baseValue = floor(color / ditherStep) * ditherStep;
 	return mix(baseValue, baseValue + ditherStep, step(ditherThreshold, distance / ditherStep - 0.001f));
 }
 
+vec3 convertRGBtoYUV(vec3 rgb) {
+	vec3 yuv;
+	yuv.r = rgb.r * 0.2126 + 0.7152 * rgb.g + 0.0722 * rgb.b;
+	yuv.g = (rgb.b - yuv.r) / 1.8556;
+	yuv.b = (rgb.r - yuv.r) / 1.5748;
+	yuv.gb += 0.5;
+	return yuv;
+}
+
+vec3 convertYUVtoRGB(vec3 yuv) {
+	yuv.gb -= 0.5;
+	vec3 rgb;
+	rgb.r = yuv.r * 1.0 + yuv.g * 0.0 + yuv.b * 1.5648;
+	rgb.g = yuv.r * 1.0 + yuv.g * -0.187324 + yuv.b * -0.468124;
+	rgb.b = yuv.r * 1.0 + yuv.g * 1.8556 + yuv.b * 0.0;
+	return rgb;
+}
+
+float channelError(float color, float colorMin, float colorMax) {
+	float range = abs(colorMin - colorMax);
+	float aRange = abs(color - colorMin);
+	return aRange / range;
+}
+
+float ditheredChannel(float error, vec2 ditherBlockUV) {
+	float pattern = texture(u_ditherTexture, ditherBlockUV).r;
+	if (error > pattern) {
+		return 1.0;
+	} else {
+		return 0.0;
+	}
+}
+
+vec3 dither(vec3 color, vec3 colorDepth, vec2 resolution, vec2 texCoords) {
+	vec3 yuv = convertRGBtoYUV(color);
+	vec3 colorMin = floor(yuv * colorDepth) / colorDepth;
+	vec3 colorMax = ceil(yuv * colorDepth) / colorDepth;
+
+	float factorX = (u_dithering[1] * u_resolution[0]) * u_dithering[0];
+	float factorY = (u_dithering[2] * u_resolution[0]) * u_dithering[0];
+	vec2 ditherTextureUV = (gl_FragCoord.xy / resolution.xy) * vec2(resolution.x / factorX, resolution.y / factorY);
+	ditherTextureUV.x = mod(ditherTextureUV.x, 1.0);
+	ditherTextureUV.y = mod(ditherTextureUV.y, 1.0);
+
+	yuv.x = mix(colorMin.x, colorMax.x, ditheredChannel(channelError(yuv.x, colorMin.x, colorMax.x), ditherTextureUV));
+	yuv.y = mix(colorMin.y, colorMax.y, ditheredChannel(channelError(yuv.y, colorMin.y, colorMax.y), ditherTextureUV));
+	yuv.z = mix(colorMin.z, colorMax.z, ditheredChannel(channelError(yuv.z, colorMin.z, colorMax.z), ditherTextureUV));
+
+	return convertYUVtoRGB(yuv);
+}
+
 void main() {
-	vec2 iTexCoords = v_texCoords;
+	//downscaling
+	vec2 texCoords = v_texCoords;
+	vec2 resolution = vec2(u_resolution[0] * (1.0f / u_resolution[1]), u_resolution[0] * (1.0f / u_resolution[2]));
 	if (u_flags[1] > 0) {
-		float dx = u_resolution[0] * (1.0f / u_resolution[1]);
-		float dy = u_resolution[0] * (1.0f / u_resolution[2]);
-		iTexCoords = vec2(dx * floor(v_texCoords.x / dx), dy * floor(v_texCoords.y / dy));
+		texCoords = vec2(resolution.x * floor(v_texCoords.x / resolution.x), resolution.y * floor(v_texCoords.y / resolution.y));
 	}
-	vec4 iFragColor = texture(u_texture, iTexCoords);
+
+	//color-depth
+	vec4 fragmentColor = texture(u_texture, texCoords);
+	vec3 colorDepth = vec3(256.0);
 	if (u_flags[2] > 0) {
-		vec3 colorStep = 1.0f / max(vec3(u_colorDepth[0], u_colorDepth[1], u_colorDepth[2]), 1.0f);
-		iFragColor.r = ditherColorChannel(iFragColor.r, 0.5f, colorStep.r);
-		iFragColor.g = ditherColorChannel(iFragColor.g, 0.5f, colorStep.g);
-		iFragColor.b = ditherColorChannel(iFragColor.b, 0.5f, colorStep.b);
+		colorDepth = vec3(u_colorDepth[0], u_colorDepth[1], u_colorDepth[2]);
+		vec3 normColorDepth = 1.0f / max(colorDepth, 1.0f);
+		fragmentColor.r = ditherColorChannel(fragmentColor.r, 0.5f, normColorDepth.r);
+		fragmentColor.g = ditherColorChannel(fragmentColor.g, 0.5f, normColorDepth.g);
+		fragmentColor.b = ditherColorChannel(fragmentColor.b, 0.5f, normColorDepth.b);
 	}
+
+	//dithering
 	if (u_flags[3] > 0) {
-		float ditherThreshold = 0;
-		if (u_ditheringMatrix == 0) { ditherThreshold = dither2x2[int(mod(v_position.x, 2) + mod(v_position.y, 2) * 2)] * 0.25F; }
-		else if (u_ditheringMatrix == 1) { ditherThreshold = dither4x4[int(mod(v_position.x, 4) + mod(v_position.y, 4) * 4)] * 0.0625F; }
-		else if (u_ditheringMatrix == 2) { ditherThreshold = ditherScreenDoor[int(mod(v_position.x, 4) + mod(v_position.y, 4) * 4)] * 0.0625F; }
-		else if (u_ditheringMatrix == 3) { ditherThreshold = ditherIndex8x8[int(mod(v_position.x, 8) + mod(v_position.y, 8) * 8)] * 0.03125F; }
-		vec3 ditherStep = 1.0f / max(vec3(u_ditherDepth, u_ditherDepth, u_ditherDepth), 1.0f);
-		iFragColor.r = ditherColorChannel(iFragColor.r, ditherThreshold, ditherStep.r);
-		iFragColor.g = ditherColorChannel(iFragColor.g, ditherThreshold, ditherStep.g);
-		iFragColor.b = ditherColorChannel(iFragColor.b, ditherThreshold, ditherStep.b);
+		fragmentColor.rgb = dither(fragmentColor.rgb, colorDepth, resolution, texCoords);
 	}
-	gl_FragColor = iFragColor;
+	gl_FragColor = fragmentColor;
 	if (u_flags[0] > 0 && gl_FragColor.a < 0.5) { discard; }
 }

@@ -19,8 +19,10 @@ package by.fxg.gdxpsx.transformers;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Filter;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 
 /** 
  *  This class using for texture modifying (<b>Color depth change, Resizing</b>).
@@ -30,28 +32,39 @@ public final class TextureTransformer {
 	public static final ResizeType DEFAULT_RESIZE_TYPE = ResizeType.FORCE;
 	public static final float DEFAULT_TEXTURE_SIZE = 192f;
 	public static final float DEFAULT_COLOR_DEPTH_FACTOR = 32f;
+	public static final Filter DEFAULT_DOWNSCALING_FILTER = Filter.BiLinear;
+	public static final TextureFilter DEFAULT_OUTPUT_MIN_FILTER = TextureFilter.Nearest;
+	public static final TextureFilter DEFAULT_OUTPUT_MAG_FILTER = TextureFilter.Nearest;
+	
 	
 	//=======================================================[MULTIPLE USE ACCESS]=====================================================//
 	private ResizeType resizeType;
 	private float textureSize;
 	private float colorDepthFactor;
+	private Filter downscalingFilter;
+	private TextureFilter outputMinFilter, outputMagFilter;
 	
 	public TextureTransformer() { this(DEFAULT_RESIZE_TYPE, DEFAULT_TEXTURE_SIZE, DEFAULT_COLOR_DEPTH_FACTOR); }
 	public TextureTransformer(float colorDepthFactor) { this(DEFAULT_RESIZE_TYPE, DEFAULT_TEXTURE_SIZE, colorDepthFactor); }
 	public TextureTransformer(ResizeType resizeType, float textureSize) { this(resizeType, textureSize, DEFAULT_COLOR_DEPTH_FACTOR); }
-	public TextureTransformer(ResizeType resizeType, float textureSize, float colorDepthFactor) {
+	public TextureTransformer(ResizeType resizeType, float textureSize, float colorDepthFactor) { this(resizeType, textureSize, colorDepthFactor, DEFAULT_DOWNSCALING_FILTER); }
+	public TextureTransformer(ResizeType resizeType, float textureSize, float colorDepthFactor, Filter filter) { this(resizeType, textureSize, colorDepthFactor, filter, DEFAULT_OUTPUT_MIN_FILTER, DEFAULT_OUTPUT_MAG_FILTER); }
+	public TextureTransformer(ResizeType resizeType, float textureSize, float colorDepthFactor, Filter filter, TextureFilter outMinFilter, TextureFilter outMagFilter) {
 		this.resizeType = resizeType;
 		this.textureSize = textureSize;
 		this.colorDepthFactor = colorDepthFactor;
+		this.downscalingFilter = filter;
+		this.outputMinFilter = outMinFilter;
+		this.outputMagFilter = outMagFilter;
 	}
 	
-	/** @param colorDepthFactor resize type, check {@link ResizeType} for more information. Default: FORCE. {@link TextureTransformer#DEFAULT_RESIZE_TYPE} **/
+	/** @param resizeType resize type, check {@link ResizeType} for more information. Default: FORCE. {@link TextureTransformer#DEFAULT_RESIZE_TYPE} **/
 	public TextureTransformer setResizeType(ResizeType resizeType) {
 		this.resizeType = resizeType;
 		return this;
 	}
 	
-	/** @param colorDepthFactor factor for texture size modifying. Default: 128. {@link TextureTransformer#DEFAULT_TEXTURE_SIZE} **/
+	/** @param textureSize factor for texture size modifying. Default: 128. {@link TextureTransformer#DEFAULT_TEXTURE_SIZE} **/
 	public TextureTransformer setTextureSize(float textureSize) {
 		this.textureSize = textureSize;
 		return this;
@@ -60,6 +73,19 @@ public final class TextureTransformer {
 	/** @param colorDepthFactor color depth change factor. Default: 48. {@link TextureTransformer#DEFAULT_COLOR_DEPTH_FACTOR} **/
 	public TextureTransformer setColorDepthFactor(float colorDepthFactor) {
 		this.colorDepthFactor = colorDepthFactor;
+		return this;
+	}
+	/** @param filter downscaling filter. Default: BiLinear. {@link Filter#BiLinear} **/
+	public TextureTransformer setDownscalingFilter(Filter filter) {
+		this.downscalingFilter = filter;
+		return this;
+	}
+	
+	
+	/** Sets output texture filters. Default: Nearest-Nearest. {@link TextureFilter#Nearest} **/
+	public TextureTransformer setOutputTextureFilter(TextureFilter minFilter, TextureFilter magFilter) {
+		this.outputMinFilter = minFilter;
+		this.outputMagFilter = magFilter;
 		return this;
 	}
 	
@@ -81,7 +107,7 @@ public final class TextureTransformer {
 	 */
 	public Texture shrinkTexture(FileHandle fileHandle) { 
 		Pixmap pixmap = new Pixmap(fileHandle);
-		Texture texture = shrinkTexture(pixmap, this.resizeType, this.textureSize, this.colorDepthFactor);
+		Texture texture = shrinkTexture(pixmap, this.resizeType, this.textureSize, this.colorDepthFactor, this.downscalingFilter, this.outputMinFilter, this.outputMagFilter);
 		pixmap.dispose();
 		return texture;
 	}
@@ -90,7 +116,7 @@ public final class TextureTransformer {
 	 * @param pixmap input image pixmap
 	 * @return modified texture object
 	 */
-	public Texture shrinkTexture(Pixmap pixmap) { return shrinkTexture(pixmap, this.resizeType, this.textureSize, this.colorDepthFactor); }
+	public Texture shrinkTexture(Pixmap pixmap) { return shrinkTexture(pixmap, this.resizeType, this.textureSize, this.colorDepthFactor, this.downscalingFilter, this.outputMinFilter, this.outputMagFilter); }
 
 	//=========================================================[STATIC ACCESS]=========================================================//
 	
@@ -99,11 +125,13 @@ public final class TextureTransformer {
 	 * @param resizeType type of imageResize
 	 * @param textureSize factor of resizing, use less than one to disable resizing
 	 * @param colorDepthFactor factor of color depth change
+	 * @param minFilter texture min filter
+	 * @param magFilter texture mag filter
 	 * @return modified texture object
 	 */
-	public static Texture shrinkTexture(FileHandle fileHandle, ResizeType resizeType, float textureSize, float colorDepthFactor) {
+	public static Texture shrinkTexture(FileHandle fileHandle, ResizeType resizeType, float textureSize, float colorDepthFactor, Filter filter, TextureFilter minFilter, TextureFilter magFilter) {
 		Pixmap pixmap = new Pixmap(fileHandle);
-		Texture texture = shrinkTexture(pixmap, resizeType, textureSize, colorDepthFactor);
+		Texture texture = shrinkTexture(pixmap, resizeType, textureSize, colorDepthFactor, filter, minFilter, magFilter);
 		pixmap.dispose();
 		return texture;
 	}
@@ -113,17 +141,21 @@ public final class TextureTransformer {
 	 * @param resizeType type of imageResize
 	 * @param textureSize factor of resizing, use less than one to disable resizing
 	 * @param colorDepthFactor factor of color depth change
+	 * @param minFilter texture min filter
+	 * @param magFilter texture mag filter
 	 * @return modified texture object
 	 */
-	public static Texture shrinkTexture(Pixmap pixmap, ResizeType resizeType, float textureSize, float colorDepthFactor) {
+	public static Texture shrinkTexture(Pixmap pixmap, ResizeType resizeType, float textureSize, float colorDepthFactor, Filter filter, TextureFilter minFilter, TextureFilter magFilter) {
 		if (pixmap == null || resizeType == null) return null;
 		if (colorDepthFactor > 1) downgradeColorDepth(pixmap, colorDepthFactor);
 		if (textureSize > 1 && resizeType != null) {
 			float factor = Math.max(1, resizeType == ResizeType.ACCORDING_TO_WIDTH ? pixmap.getWidth() / textureSize : resizeType == ResizeType.ACCORDING_TO_HEIGHT ? pixmap.getHeight() / textureSize : textureSize);
 			int sizeX = resizeType == ResizeType.FORCE ? (int)textureSize : textureSize > 1 ? (int)Math.max(1, pixmap.getWidth() / factor) : pixmap.getWidth(), sizeY = resizeType == ResizeType.FORCE ? (int)textureSize : textureSize > 0 ? (int)Math.max(1, pixmap.getHeight() / factor) : pixmap.getHeight();
 			Pixmap downscaled = new Pixmap(sizeX, sizeY, Format.RGBA8888);
+			downscaled.setFilter(filter);
 			downscaled.drawPixmap(pixmap, 0, 0, pixmap.getWidth(), pixmap.getHeight(), 0, 0, downscaled.getWidth(), downscaled.getHeight());
 			Texture finalTexture = new Texture(downscaled);
+			finalTexture.setFilter(minFilter, magFilter);
 			downscaled.dispose();
 			return finalTexture;
 		}

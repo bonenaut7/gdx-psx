@@ -27,14 +27,14 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 /** 
- *  This <b>Post-processing</b> class using for screen resolution downscaling using integrated shader.
+ *  This <b>Post-processing</b> class using for screen resolution downscaling, color depth change & dithering using integrated shader.
  *  @author fxgaming (FXG)
  */
 public final class PSXPostProcessing {
 	public static final float DEFAULT_INTENSITY = 4.0f;
 	public static final float DEFAULT_COLOR_DEPTH = 64.0f;
-	public static final DitherMatrix DEFAULT_DITHER_MATRIX = DitherMatrix.Dither2x2;
-	public static final float DEFAULT_DITHER_DEPTH = 32.0f;
+	public static final DitheringMatrix DEFAULT_DITHERING_MATRIX = DitheringMatrix.BAYER_8x8;
+	public static final float DEFAULT_DITHER_SCALE = 1.0f;
 	
 	private String vertexShader = null;
 	private String fragmentShader = null;
@@ -42,6 +42,7 @@ public final class PSXPostProcessing {
 	private FrameBuffer frameBuffer;
 	private SpriteBatch batch;
 	private TextureRegion lastBufferTexture;
+	private Texture ditheringTexture = null;
 	
 	//===================[CONFIGURATION]======================
 	private float[] flags = {1, 1, 1, -1};
@@ -53,8 +54,8 @@ public final class PSXPostProcessing {
 	private float[] colorDepth = {32, 32, 32};
 	
 	//[3] Dithering / Image dithering
-	private DitherMatrix ditheringMatrix;
-	private float ditherDepth;
+	private DitheringMatrix ditheringMatrix;
+	private float[] dithering = {1, 36, 4};
 	//===================[CONFIGURATION]======================
 
 	/** Creating downscaling framebuffer with default parameters **/
@@ -78,8 +79,9 @@ public final class PSXPostProcessing {
 		
 		this.resolution = new float[] {DEFAULT_INTENSITY, width, height};
 		this.colorDepth = new float[] {DEFAULT_COLOR_DEPTH, DEFAULT_COLOR_DEPTH, DEFAULT_COLOR_DEPTH};
-		this.ditheringMatrix = DEFAULT_DITHER_MATRIX;
-		this.ditherDepth = DEFAULT_DITHER_DEPTH;
+		this.ditheringMatrix = DEFAULT_DITHERING_MATRIX;
+		this.dithering = new float[] {DEFAULT_DITHER_SCALE, DEFAULT_DITHERING_MATRIX.textureWidth, DEFAULT_DITHERING_MATRIX.textureHeight};
+		this.ditheringTexture = this.ditheringMatrix.obtainTexture();
 
 		this.frameBuffer = new FrameBuffer(colorFormat, (int)width, (int)height, true);
 		Texture texture = this.frameBuffer.getColorBufferTexture();
@@ -94,8 +96,8 @@ public final class PSXPostProcessing {
 		this.program.setUniform1fv("u_flags", this.flags, 0, this.flags.length);
 		this.program.setUniform1fv("u_resolution", this.resolution, 0, this.resolution.length);
 		this.program.setUniform1fv("u_colorDepth", this.colorDepth, 0, this.colorDepth.length);
-		this.program.setUniformi("u_ditheringMatrix", this.ditheringMatrix.ordinal());
-		this.program.setUniformf("u_ditherDepth", this.ditherDepth);
+		this.program.setUniform1fv("u_dithering", this.dithering, 0, this.dithering.length);
+		this.program.setUniformi("u_ditherTexture", 1);
 	}
 
 	/** Resets(recreates) {@link FrameBuffer}. **/
@@ -183,20 +185,24 @@ public final class PSXPostProcessing {
 	}
 	
 	/** @param ditheringMatrix - dithering matrix preset **/
-	public PSXPostProcessing setDitheringMatrix(DitherMatrix ditheringMatrix) {
+	public PSXPostProcessing setDitheringMatrix(DitheringMatrix ditheringMatrix) {
 		if (ditheringMatrix != null) {
+			this.ditheringTexture.dispose();
 			this.ditheringMatrix = ditheringMatrix;
+			this.ditheringTexture = ditheringMatrix.obtainTexture();
+			this.dithering[1] = ditheringMatrix.textureWidth;
+			this.dithering[2] = ditheringMatrix.textureHeight;
 			this.flushBatch();
-			this.program.setUniformi("u_ditheringMatrix", this.ditheringMatrix.ordinal());
+			this.program.setUniform1fv("u_dithering", this.dithering, 0, 3);
 		}
 		return this;
 	}
 	
-	/** @param ditherDepth - color depth of dithering **/
-	public PSXPostProcessing setDitherDepth(float ditherDepth) {
-		this.ditherDepth = Math.max(1, ditherDepth);
+	/** @param ditherScale - scale of per-pixel dithering **/
+	public PSXPostProcessing setDitherScale(float ditherScale) {
+		this.dithering[0] = Math.max(1, ditherScale);
 		this.flushBatch();
-		this.program.setUniformf("u_ditherDepth", this.ditherDepth);
+		this.program.setUniform1fv("u_dithering", this.dithering, 0, 3);
 		return this;
 	}
 	
@@ -238,6 +244,8 @@ public final class PSXPostProcessing {
 	 */
 	public void drawFrame(int x, int y, int sizeX, int sizeY) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
+		this.ditheringTexture.bind(1);
+		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 		this.batch.begin();
 		this.batch.draw(this.lastBufferTexture, x, y, sizeX, sizeY);
 		this.batch.end();
@@ -255,8 +263,7 @@ public final class PSXPostProcessing {
 		this.program.setUniform1fv("u_flags", this.flags, 0, 4);
 		this.program.setUniform1fv("u_resolution", this.resolution, 0, 3);
 		this.program.setUniform1fv("u_colorDepth", this.colorDepth, 0, 3);
-		this.program.setUniformi("u_ditheringMatrix", this.ditheringMatrix.ordinal());
-		this.program.setUniformf("u_ditherDepth", this.ditherDepth);
+		this.program.setUniform1fv("u_dithering", this.colorDepth, 0, 3);
 		this.batch.begin();
 		this.batch.draw(this.lastBufferTexture, x, y, sizeX, sizeY);
 		this.batch.end();
@@ -275,23 +282,5 @@ public final class PSXPostProcessing {
 		RESOLUTION_DOWNSCALING,
 		COLOR_DEPTH_LIMITING,
 		DITHERING;
-	}
-	
-	/** DitheringMatrix is enum of currently available configurable dithering matrices **/
-	public enum DitherMatrix {
-		Dither2x2(0.25F, new float[]{0, 3, 2, 1}),
-		Dither4x4(0.0625F, new float[]{0,  8,  2,  10, 12, 4,  14, 6, 3,  11, 1,  9, 15, 7, 13, 5}),
-		ScreenDoor4x4(0.0625F, new float[]{1, 9, 3, 11, 13, 5, 15, 7, 4, 12, 2, 10, 16, 8, 14, 6}),
-		index8x8(0.03125F, new float[]{0, 32, 8, 40, 2, 34, 10, 42, 48, 16, 56, 24, 50, 18, 58, 26, 12, 44, 4, 36, 14, 46, 6, 38, 60, 28, 52, 20, 62, 30, 54, 22, 3, 35, 11, 43, 1, 33, 9, 41, 51, 19, 59, 27, 49, 17, 57, 25, 15, 47, 7, 39, 13, 45, 5, 37, 63, 31, 55, 23, 61, 29, 53, 21});
-		
-		public float[] values;
-		public float ditheringMatrixSize;
-		public float thresholdMultiplier;
-		
-		DitherMatrix(float thresholdMultiplier, float[] values) {
-			this.thresholdMultiplier = thresholdMultiplier;
-			this.ditheringMatrixSize = (float)Math.sqrt(values.length);
-			this.values = values;
-		}
 	}
 }
