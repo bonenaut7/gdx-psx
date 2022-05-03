@@ -31,7 +31,7 @@ allprojects {
 ```
 dependencies {
     ...
-    implementation 'com.github.fxgaming:gdx-psx:0.1.2a'
+    implementation 'com.github.fxgaming:gdx-psx:0.1.3'
 }
 ```
 
@@ -77,8 +77,7 @@ Also library provides few things to work with post-processing!
 PSXPostProcessing postProcessing = new PSXPostProcessing(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 postProcessing.setDownscalingIntensity(4f);
 postProcessing.setColorDepth(32f, 32f, 32f);
-postProcessing.setDitheringMatrix(DitherMatrix.Dither4x4);
-postProcessing.setFlagState(FlagType.DITHERING, true);
+postProcessing.setDitheringMatrix(DitheringMatrix.BAYER_8x8);
 ```
 2. Put this in the render loop
 ```java
