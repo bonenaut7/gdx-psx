@@ -34,6 +34,7 @@ dependencies {
     implementation 'com.github.fxgaming:gdx-psx:0.1.3'
 }
 ```
+P.S. if you having issues with android support on 0.1.3 version, try to use 0.1.4 bugfixed version, it should help you
 
 # Quick start
 **gdx-psx** have a lot of configurable parameters, recommended to check
