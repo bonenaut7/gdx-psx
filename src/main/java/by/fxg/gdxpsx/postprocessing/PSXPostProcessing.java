@@ -16,6 +16,7 @@
 
 package by.fxg.gdxpsx.postprocessing;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -75,7 +76,13 @@ public final class PSXPostProcessing {
 	public PSXPostProcessing(Format colorFormat, float width, float height) {
 		this.vertexShader = Gdx.files.classpath("by/fxg/gdxpsx/shaders/postprocessing.vert").readString();
 		this.fragmentShader = Gdx.files.classpath("by/fxg/gdxpsx/shaders/postprocessing.frag").readString();
-		this.program = new ShaderProgram(this.vertexShader, this.fragmentShader);
+		this.program = new ShaderProgram(this.vertexShader, this.fragmentShader); 
+		if (!this.program.isCompiled()) {
+			int prevLogLevel = Gdx.app.getLogLevel();
+			Gdx.app.setLogLevel(Application.LOG_ERROR);
+			Gdx.app.log("GDX-PSX", "PSXPostProcessing unable to compile shader.\nShader log:\n" + this.program.getLog());
+			Gdx.app.setLogLevel(prevLogLevel);
+		}
 		
 		this.resolution = new float[] {DEFAULT_INTENSITY, width, height};
 		this.colorDepth = new float[] {DEFAULT_COLOR_DEPTH, DEFAULT_COLOR_DEPTH, DEFAULT_COLOR_DEPTH};
