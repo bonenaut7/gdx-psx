@@ -32,7 +32,9 @@ import com.badlogic.gdx.math.Vector2;
  *  <b>WARNING! This have a very critical problem. Resolution change cannot be done without recompiling shader because it will cause problems with downscaling!</b>
  *  
  *  @author fxgaming (FXG)
+ *  @deprecated Replaced with {@link PSXShader} and {@link PSXShaderProvider}
  */
+@Deprecated
 public class ShaderTransformer {
 	public static final float DEFAULT_JITTER_FACTOR = 4.0f;
 	

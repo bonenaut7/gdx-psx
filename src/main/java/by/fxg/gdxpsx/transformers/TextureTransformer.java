@@ -27,7 +27,9 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 /** 
  *  This class using for texture modifying (<b>Color depth change, Resizing</b>).
  *  @author fxgaming (FXG)
+ *  @deprecated Will be removed in 2.1 and replaced with attribute for the {@link PSXShader} and {@link PSXShaderProvider}
  */
+@Deprecated
 public final class TextureTransformer {
 	public static final ResizeType DEFAULT_RESIZE_TYPE = ResizeType.FORCE;
 	public static final float DEFAULT_TEXTURE_SIZE = 192f;
@@ -35,7 +37,6 @@ public final class TextureTransformer {
 	public static final Filter DEFAULT_DOWNSCALING_FILTER = Filter.BiLinear;
 	public static final TextureFilter DEFAULT_OUTPUT_MIN_FILTER = TextureFilter.Nearest;
 	public static final TextureFilter DEFAULT_OUTPUT_MAG_FILTER = TextureFilter.Nearest;
-	
 	
 	//=======================================================[MULTIPLE USE ACCESS]=====================================================//
 	private ResizeType resizeType;

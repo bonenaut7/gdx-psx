@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
  * 	@author fxgaming (FXG)
  */
 public class DitheringMatrix {
+	public static final DitheringMatrix PSX = new DitheringMatrix(36, 4, Gdx.files.classpath("by/fxg/gdxpsx/matrices/bayer8x8.png"));
 	public static final DitheringMatrix BAYER_8x8 = new DitheringMatrix(8, 8, Gdx.files.classpath("by/fxg/gdxpsx/matrices/bayer8x8.png"));
 	public static final DitheringMatrix BAYER_4x4 = new DitheringMatrix(4, 4, Gdx.files.classpath("by/fxg/gdxpsx/matrices/bayer4x4.png"));
 	public static final DitheringMatrix BAYER_3x3 = new DitheringMatrix(3, 3, Gdx.files.classpath("by/fxg/gdxpsx/matrices/bayer3x3.png"));
