@@ -31,10 +31,9 @@ allprojects {
 ```
 dependencies {
     ...
-    implementation 'com.github.fxgaming:gdx-psx:0.1.3'
+    implementation 'com.github.fxgaming:gdx-psx:0.1.5'
 }
 ```
-P.S. if you having issues with android support on 0.1.3 version, try to use 0.1.4 bugfixed version, it should help you
 
 # Quick start
 **gdx-psx** have a lot of configurable parameters, recommended to check
@@ -57,18 +56,16 @@ transformer.setColorDepthFactor(32f);
 Texture newTexture = transformer.shrinkTexture(fileHandle);
 ```
 
-### 3D effects (Vertex Jitter)
+### 3D Mesh effects (Vertex Jitter/Texture Affineness/LUT)
 Library can provide Vertex Jitter effect to your models (via `ModelBatch`)
 ```java
-//You can provide your own shaders, but using libgdx's default shader by default.
-ShaderTransformer transformer = new ShaderTransformer(); 
-transformer.setResolution(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-transformer.setFactor(4f); //Jitter factor
-//You can provide Config for ShaderProvider if needed
-ModelBatch myModelBatch = new ModelBatch(transformer.createShaderProvider());
+//Create ModelBatch with PSX shader provider (You can also specify type of shader you need with PSXShaderType enum)
+ModelBatch myModelBatch = new ModelBatch(new PSXShaderProvider());
+Environmment environment = new Environment();
+environment.set(AttributePSXEffect.createVertexJitter(4.0F)); //add vertex jitter effect with 4.0 strength
+environment.set(AttributePSXEffect.createTextureAffineness(0.5F)); //add texture affineness effect with 50% contribution
+//Then you can render your models with environment, or add attributes primarily to your model materials!
 ```
-Library also supports [gdx-gltf](https://github.com/mgsx-dev/gdx-gltf) by [mgsx](https://github.com/mgsx-dev)
-To use `ShaderTransformer` with `PBRShaderProvider` use `PBRShaderTransformer`.
 
 ### Post-processing (Downscaling, Color depth, Screen dithering)
 Also library provides few things to work with post-processing!
