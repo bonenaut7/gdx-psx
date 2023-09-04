@@ -155,6 +155,10 @@ vec2 psxModifyUV(vec2 originUV) {
 	return originUV;
 }
 
+vec2 manualRound(vec2 value) {
+	return vec2(floor(value.x + 0.5), floor(value.y + 0.5));
+}
+
 //[SHADER]===========================================================================================
 void main() {
 	//[TEXTURES]=====================================================================================
@@ -209,10 +213,10 @@ void main() {
 		v_position = u_worldTrans * vec4(a_position, 1.0);
 	#endif //skinningFlag
 	gl_Position = u_projViewTrans * v_position;
-	
+
 	//[GDX-PSX]======================================================================================
 	#ifdef psxVertexJitterFlag
-		gl_Position.xy = round(gl_Position.xy * u_psxVertexJitter) / u_psxVertexJitter;
+		gl_Position.xy = manualRound(gl_Position.xy * u_psxVertexJitter) / u_psxVertexJitter;
 	#endif //psxVertexJitterFlag
 	
 	#ifdef psxTextureAffinenessFlag
