@@ -5,16 +5,6 @@
      file (usually called GdxDefinition.gwt.xml) as follows:
 
      <inherits name="by.fxg.gdxpsx.gdx_psx"/>
-	 
-	 Obviously, change your_library to match your project and this file's name,
-	 and change the source path below to match the folder next to this. When you
-	 change com.github.your_name to a different package, that also changes the
-	 GWT inherits line for this library. So if I changed
-	 com.github.your_name.your_library to com.squidpony.squidlib, then this file
-	 would have to be moved to the com/squidpony folder and renamed to
-	 squidlib.gwt.xml . The folder next to it should also be squidlib/ . Note,
-	 the last part of the "inherits" name is the name of this .gwt.xml file,
-	 without any extension.
 
 	 Note, you should not have a .gwt.xml file in the root of your resources/
 	 folder. That was the way this template handled GWT in earlier versions,
