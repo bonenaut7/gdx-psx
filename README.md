@@ -35,6 +35,21 @@ dependencies {
 }
 ```
 
+### GWT (optional)
+
+3. Add the sources dependency to your HTML gradle
+```
+dependencies {
+    ...
+    api "com.github.fxgaming:gdx-psx:$gdxPsxVersion:sources"
+}
+```
+
+4. Inherit the module in your GdxDefinition.gwt.xml
+```
+<inherits name="by.fxg.gdxpsx.gdx_psx"/>
+```
+
 # Quick start
 **gdx-psx** have a lot of configurable parameters, recommended to check
 the demo before starting work with library!
