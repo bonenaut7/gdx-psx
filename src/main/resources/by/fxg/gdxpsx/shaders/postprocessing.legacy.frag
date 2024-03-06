@@ -10,7 +10,6 @@ precision mediump float;
 #endif
 
 varying vec2 v_texCoords;
-varying vec2 v_position;
 uniform sampler2D u_texture;
 
 uniform float u_flags[4];

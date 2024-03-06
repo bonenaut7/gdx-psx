@@ -14,7 +14,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 /** 
  *  This <b>Post-processing</b> class using for screen resolution downscaling, color depth change & dithering using integrated shader.
  */
-public final class PSXPostProcessing {
+@Deprecated
+public final class PSXPostProcessingLegacy {
 	public static final float DEFAULT_INTENSITY = 4.0f;
 	public static final float DEFAULT_COLOR_DEPTH = 64.0f;
 	public static final DitheringMatrix DEFAULT_DITHERING_MATRIX = DitheringMatrix.BAYER_8x8;
@@ -43,22 +44,22 @@ public final class PSXPostProcessing {
 	//===================[CONFIGURATION]======================
 
 	/** Creating downscaling framebuffer with default parameters **/
-	public PSXPostProcessing() { this(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); }
+	public PSXPostProcessingLegacy() { this(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); }
 	
 	/** Creating downscaling framebuffer with given parameters 
 	 *  @param width - width of resultion, width of framebuffer {@link FrameBuffer}
 	 *  @param height - height of resultion, height of framebuffer {@link FrameBuffer}
 	 */
-	public PSXPostProcessing(float width, float height) { this(Format.RGBA8888, width, height); }
+	public PSXPostProcessingLegacy(float width, float height) { this(Format.RGBA8888, width, height); }
 	
 	/** Creating downscaling framebuffer with given parameters 
 	 *  @param colorFormat - color format of {@link FrameBuffer}
 	 *  @param width - width of resultion, width of framebuffer {@link FrameBuffer}
 	 *  @param height - height of resultion, height of framebuffer {@link FrameBuffer}
 	 */
-	public PSXPostProcessing(Format colorFormat, float width, float height) {
-		this.vertexShader = Gdx.files.classpath("by/fxg/gdxpsx/shaders/postprocessing.vert").readString();
-		this.fragmentShader = Gdx.files.classpath("by/fxg/gdxpsx/shaders/postprocessing.frag").readString();
+	public PSXPostProcessingLegacy(Format colorFormat, float width, float height) {
+		this.vertexShader = Gdx.files.classpath("by/fxg/gdxpsx/shaders/postprocessing.legacy.vert").readString();
+		this.fragmentShader = Gdx.files.classpath("by/fxg/gdxpsx/shaders/postprocessing.legacy.frag").readString();
 		this.program = new ShaderProgram(this.vertexShader, this.fragmentShader); 
 		if (!this.program.isCompiled()) {
 			int prevLogLevel = Gdx.app.getLogLevel();
@@ -91,14 +92,14 @@ public final class PSXPostProcessing {
 	}
 
 	/** Resets(recreates) {@link FrameBuffer}. **/
-	public PSXPostProcessing resetFrameBuffer() { return this.resetFrameBuffer(Format.RGBA8888, (int)this.resolution[1], (int)this.resolution[2], true); }
+	public PSXPostProcessingLegacy resetFrameBuffer() { return this.resetFrameBuffer(Format.RGBA8888, (int)this.resolution[1], (int)this.resolution[2], true); }
 	
 	/** Resets(recreates) {@link FrameBuffer}.
 	 * @param width - viewport width of {@link FrameBuffer}
 	 * @param height - viewport height of {@link FrameBuffer}
 	 * @param hasDepth - will {@link FrameBuffer} have depth?
 	 */
-	public PSXPostProcessing resetFrameBuffer(int width, int height, boolean hasDepth) { return this.resetFrameBuffer(Format.RGBA8888, width, height, hasDepth); }
+	public PSXPostProcessingLegacy resetFrameBuffer(int width, int height, boolean hasDepth) { return this.resetFrameBuffer(Format.RGBA8888, width, height, hasDepth); }
 	
 	/** Resets(recreates) {@link FrameBuffer}.
 	 * @param colorFormat - Color format of {@link FrameBuffer}
@@ -106,7 +107,7 @@ public final class PSXPostProcessing {
 	 * @param height - viewport height of {@link FrameBuffer}
 	 * @param hasDepth - will {@link FrameBuffer} have depth?
 	 */
-	public PSXPostProcessing resetFrameBuffer(Format colorFormat, int width, int height, boolean hasDepth) {
+	public PSXPostProcessingLegacy resetFrameBuffer(Format colorFormat, int width, int height, boolean hasDepth) {
 		if (this.lastBufferTexture.getTexture() != null) this.lastBufferTexture.getTexture().dispose();
 		if (this.frameBuffer != null) this.frameBuffer.dispose();
 		this.frameBuffer = new FrameBuffer(colorFormat, width, height, hasDepth);
@@ -119,7 +120,7 @@ public final class PSXPostProcessing {
 	 *  @param flagType - type of function
 	 *  @param enabled - state
 	 */
-	public PSXPostProcessing setFlagState(boolean enabled, FlagType flagType) {
+	public PSXPostProcessingLegacy setFlagState(boolean enabled, FlagType flagType) {
 		if (flagType != null) {
 			this.flags[flagType.ordinal()] = enabled ? 1f : -1f;
 			this.flushBatch();
@@ -132,7 +133,7 @@ public final class PSXPostProcessing {
 	 *  @param enabled - state
 	 *  @param flags - types of functions
 	 */
-	public PSXPostProcessing setFlagsState(boolean enabled, FlagType... flags) {
+	public PSXPostProcessingLegacy setFlagsState(boolean enabled, FlagType... flags) {
 		for (FlagType flagType : flags) if (flagType != null) this.flags[flagType.ordinal()] = enabled ? 1f : -1f;
 		this.flushBatch();
 		this.program.setUniform1fv("u_flags", this.flags, 0, 4);
@@ -144,7 +145,7 @@ public final class PSXPostProcessing {
 	 *  @param width - width of viewport resultion
 	 *  @param height - height of viewport resultion
 	 */
-	public PSXPostProcessing setViewportResolution(float width, float height) {
+	public PSXPostProcessingLegacy setViewportResolution(float width, float height) {
 		this.resolution[1] = width;
 		this.resolution[2] = height;
 		this.flushBatch();
@@ -152,8 +153,8 @@ public final class PSXPostProcessing {
 		return this;	
 	}
 	
-	/** @param intensity - intensity of downscaling. Default: 2. {@link PSXPostProcessing#DEFAULT_INTENSITY} **/
-	public PSXPostProcessing setDownscalingIntensity(float intensity) {
+	/** @param intensity - intensity of downscaling. Default: 2. {@link PSXPostProcessingLegacy#DEFAULT_INTENSITY} **/
+	public PSXPostProcessingLegacy setDownscalingIntensity(float intensity) {
 		this.resolution[0] = Math.max(1, intensity);
 		this.flushBatch();
 		this.program.setUniform1fv("u_resolution", this.resolution, 0, 3);
@@ -165,7 +166,7 @@ public final class PSXPostProcessing {
 	 *  @param green - green channel
 	 *  @param blue - blue channel
 	 */
-	public PSXPostProcessing setColorDepth(float red, float green, float blue) {
+	public PSXPostProcessingLegacy setColorDepth(float red, float green, float blue) {
 		this.colorDepth[0] = Math.max(1, red);
 		this.colorDepth[1] = Math.max(1, green);
 		this.colorDepth[2] = Math.max(1, blue);
@@ -175,7 +176,7 @@ public final class PSXPostProcessing {
 	}
 	
 	/** @param ditheringMatrix - dithering matrix preset **/
-	public PSXPostProcessing setDitheringMatrix(DitheringMatrix ditheringMatrix) {
+	public PSXPostProcessingLegacy setDitheringMatrix(DitheringMatrix ditheringMatrix) {
 		if (ditheringMatrix != null) {
 			this.ditheringTexture.dispose();
 			this.ditheringMatrix = ditheringMatrix;
@@ -189,7 +190,7 @@ public final class PSXPostProcessing {
 	}
 	
 	/** @param ditherScale - scale of per-pixel dithering **/
-	public PSXPostProcessing setDitherScale(float ditherScale) {
+	public PSXPostProcessingLegacy setDitherScale(float ditherScale) {
 		this.dithering[0] = Math.max(1, ditherScale);
 		this.flushBatch();
 		this.program.setUniform1fv("u_dithering", this.dithering, 0, 3);
@@ -200,7 +201,7 @@ public final class PSXPostProcessing {
 	 *  @param min - Minification filter. Default: Nearest. {@link TextureFilter#Nearest}
 	 *  @param mag - Magnification filter. Default: Nearest. {@link TextureFilter#Nearest}
 	 */
-	public PSXPostProcessing setFilter(TextureFilter min, TextureFilter mag) {
+	public PSXPostProcessingLegacy setFilter(TextureFilter min, TextureFilter mag) {
 		this.lastBufferTexture.getTexture().setFilter(min, mag);
 		return this;
 	}
@@ -265,7 +266,7 @@ public final class PSXPostProcessing {
 	}
 	
 	/** FlagType is enum of currently available configurable functions
-	 *  of post-processing unit. Used in the {@link PSXPostProcessing#setFlagEnabled(FlagType, boolean)}
+	 *  of post-processing unit. Used in the {@link PSXPostProcessingO#setFlagEnabled(FlagType, boolean)}
 	 */
 	public enum FlagType {
 		ALPHA_CHANNEL,
