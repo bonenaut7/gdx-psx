@@ -13,13 +13,13 @@ plugins {
 	id 'maven-publish'
 }
 
-group 'io.github.fxgaming'
-version '1.0.0'
+group 'io.github.bonenaut7'
+version '1.0.6'
 apply from: 'publishing.gradle'
 
 ext {
-	gdxVersion = '1.10.0'
-	gltfVersion = '2.0.0-rc.1'
+	gdxVersion = '1.12.1'
+	gltfVersion = '2.1.0'
 }
 
 repositories {
