@@ -1,19 +1,3 @@
-/*******************************************************************************
- * Copyright 2022 Matvey Zholudz
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
-
 package by.fxg.gdxpsx.g3d;
 
 import com.badlogic.gdx.graphics.g3d.Attributes;
@@ -89,14 +73,13 @@ public class PSXShader extends DefaultShader {
 		this.register(emissiveLUTUniform, emissiveLUTSetter);
 	}
 	
-	static String createPSXPrefix(final Renderable renderable, final Config config) {
+	public static String createPSXPrefix(final Renderable renderable, final Config config) {
 		final String prefix$ = createPrefix(renderable, config);
 		String prefix = prefix$;
 		Attributes attributes = combineAttributes(renderable);
 		final long attributesMask = attributes.getMask();
 		
 		if (hasFlag(attributesMask, AttributePSXEffect.vertexJitter)) prefix += "#define " + AttributePSXEffect.vertexJitterAlias + "Flag\n";
-		//if (hasFlag(attributesMask, AttributePSXEffect.textureJitter)) prefix += "#define " + AttributePSXEffect.textureJitterAlias + "Flag\n";
 		if (hasFlag(attributesMask, AttributePSXEffect.textureAffineness)) prefix += "#define " + AttributePSXEffect.textureAffinenessAlias + "Flag\n";
 		if (hasFlag(attributesMask, LookupTextureAttribute.diffuseLUT) || hasFlag(attributesMask, LookupTextureAttribute.specularLUT) || hasFlag(attributesMask, LookupTextureAttribute.emissiveLUT)) {
 			prefix += "#define LUTFlag\n";
@@ -105,21 +88,8 @@ public class PSXShader extends DefaultShader {
 			if (hasFlag(attributesMask, LookupTextureAttribute.emissiveLUT)) prefix += "#define " + LookupTextureAttribute.emissiveLUTAlias + "Flag\n";
 		}
 		
-		/*//debug
-		String strcounter = prefix;
-		int counter = 0;
-		while (strcounter.indexOf("\n") > -1) {
-			strcounter = strcounter.replaceFirst(Pattern.quote("\n"), "");
-			counter++;
-		}
-		System.out.println("Offset: " + counter);
-		*/
 		return prefix;
 	}
-	
-	//static String stdVertexShader, stdFragmentShader;
-	//static String getPSXVertexShader() { return stdVertexShader != null ? stdVertexShader : (stdVertexShader = Gdx.files.local("assets/_testpsx/vert.glsl").readString()); }
-	//static String getPSXFragmentShader() { return stdFragmentShader != null ? stdFragmentShader : (stdFragmentShader = Gdx.files.local("assets/_testpsx/frag.glsl").readString()); }
 	
 	protected final static Attributes tmpAttributes = new Attributes();
 	protected static final Attributes combineAttributes(final Renderable renderable) {
