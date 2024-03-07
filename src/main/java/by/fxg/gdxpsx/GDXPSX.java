@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class GDXPSX {
+public final class GDXPSX {
 	public static final String EMPTY = "";
 	
 	public static Logger LOGGER;
@@ -54,4 +54,7 @@ public class GDXPSX {
 	public static void disposeResources() {
 		
 	}
+	
+	// Private constructor, believe me you don't need a GDXPSX object >:(
+	GDXPSX() {}
 }
