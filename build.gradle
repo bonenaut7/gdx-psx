@@ -14,7 +14,7 @@ plugins {
 }
 
 group 'io.github.bonenaut7'
-version '1.0.6'
+version '0.2.0'
 apply from: 'publishing.gradle'
 
 ext {
