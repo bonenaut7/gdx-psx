@@ -34,13 +34,13 @@ import by.fxg.gdxpsx.GDXPSX;
 public class PSXPostProcessingWrapper implements Disposable {
 	/** If this option enabled, then draw methods will cache active shader and will bind it after drawing
 	 *    {@link #frameBuffer}'s color buffer texture **/
-	public static boolean CACHE_BATCH_SHADER = true;
+	public static boolean cacheBatchShader = true;
 
 	/** Few checks for {@link #drawPostProcessedTexture(Batch, int, int, int, int, boolean)} used to 
 	 *    find out what {@link Batch} is doing(drawing or not drawing). If batch is not drawing, then
 	 *    if this option is turned on batch will start to draw and will end and flush after drawing
 	 *    {@link #frameBuffer}'s color buffer texture. Otherwise batch will be only flushed. **/
-	public static boolean AUTOMATICALLY_BEGIN_BATCH_DRAW = true;
+	public static boolean automaticallyBeginBatchDraw = true;
 	
 	/** {@link PSXPostProcessing} object that contains shader for applying effects **/
 	protected PSXPostProcessing postProcessing;
@@ -155,10 +155,10 @@ public class PSXPostProcessingWrapper implements Disposable {
 	/** Draws {@link #frameBuffer}'s color buffer texture to
 	 *    a {@link Batch} from parameters with <code>x, y, width, height</code>
 	 *    dimensions from parameters. <br>
-	 *  Automatically begins and ends {@link Batch} if {@link #AUTOMATICALLY_BEGIN_BATCH_DRAW} enabled,
+	 *  Automatically begins and ends {@link Batch} if {@link #automaticallyBeginBatchDraw} enabled,
 	 *    otherwise just flushes {@link Batch} or throws GdxRuntimeException if batch is not
 	 *    ready for rendering {@link #frameBuffer}'s color buffer texture. <br>
-	 *  Automatically switches back to used before shader if {@link #CACHE_BATCH_SHADER} enabled.
+	 *  Automatically switches back to used before shader if {@link #cacheBatchShader} enabled.
 	 *  
 	 *  @param batch - {@link Batch} used for rendering {@link #frameBuffer}'s color buffer texture
 	 *  @param x - starting X coordinate
@@ -167,7 +167,7 @@ public class PSXPostProcessingWrapper implements Disposable {
 	 *  @param height - height of region where texture will be rendered
 	 *  @throws GdxRuntimeException - if {@link Batch} is null, {@link #postProcessing} is null,
 	 *    {@link #frameBuffer} is not created, if {@link Batch#begin()} not used before calling
-	 *    this method and {@link #AUTOMATICALLY_BEGIN_BATCH_DRAW} is false (disabled).
+	 *    this method and {@link #automaticallyBeginBatchDraw} is false (disabled).
 	 *  @return status of rendering (false - failure, true - success) :/
 	 *  **/
 	public boolean drawPostProcessedTexture(Batch batch, int x, int y, int width, int height) {
@@ -195,7 +195,7 @@ public class PSXPostProcessingWrapper implements Disposable {
 		final boolean isDrawing = batch.isDrawing();
 		batch.setShader(this.postProcessing.getShaderProgram());
 		
-		if (!isDrawing && AUTOMATICALLY_BEGIN_BATCH_DRAW) {
+		if (!isDrawing && automaticallyBeginBatchDraw) {
 			batch.begin(); // if batch is not drawing then we should start to draw :/
 		}
 		
@@ -206,7 +206,7 @@ public class PSXPostProcessingWrapper implements Disposable {
 		batch.draw(this.frameBuffer.getColorBufferTexture(), x, y, width, height, 0, 0, 1, 1);
 		batch.flush();
 		
-		if (!isDrawing && AUTOMATICALLY_BEGIN_BATCH_DRAW) {
+		if (!isDrawing && automaticallyBeginBatchDraw) {
 			// if batch wasn't drawing before and we initiated drawing process, then we should
 			//   end the batch too
 			batch.end(); 
@@ -214,7 +214,7 @@ public class PSXPostProcessingWrapper implements Disposable {
 			batch.flush(); // if batch was drawing, we need to flush it to switch shader later
 		}
 		
-		if (CACHE_BATCH_SHADER) {
+		if (cacheBatchShader) {
 			batch.setShader(cachedShaderProgram); // switching shader if it's needed
 		}
 		

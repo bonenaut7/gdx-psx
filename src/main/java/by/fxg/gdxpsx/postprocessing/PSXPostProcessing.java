@@ -39,23 +39,23 @@ import by.fxg.gdxpsx.GDXPSX;
 public class PSXPostProcessing implements Disposable {
 	/** Option to turn off parameters validation in case if you want to do something special.
 	 *  Parameter validation is created for stopping compilation if some parameters are in invalid state. **/
-	public static boolean VALIDATE_PARAMETERS = true;
+	public static boolean validateParameters = true;
 	
 	/** While post-processing is used in dynamic mode with this option turned on, you will be able to update 
 	 *    parameters without recompiling shader only in dynamic mode, but any update requires shader to be
 	 *    bound at the moment of changes, otherwise changes will try to be applied on the other bound shader 
 	 *    and it will do nothing, or will do something bad, so be careful with this! **/
-	public static boolean EXPLICIT_DYNAMIC_UNIFORM_UPDATES = true;
+	public static boolean explicitDynamicUniformUpdates = true;
 	
 	/** @see #setActiveShaderBindingCache(IntBuffer) **/
-	private static IntBuffer SHADER_BINDING_BUFFER = null;
+	private static IntBuffer shaderBindingBuffer = null;
 	
 	/** Option for caching bound shader before binding post-processing shader after compilation, to bind
 	 *    previous shader after sending uniform values to compiled shader.
 	 * @param intBuffer - Provide default or direct buffer with 4 bytes or 1 integer
 	 *   size to enable caching, or NULL to disable it. **/
 	public static void setActiveShaderBindingCache(final IntBuffer intBuffer) {
-		SHADER_BINDING_BUFFER = intBuffer;
+		shaderBindingBuffer = intBuffer;
 	}
 	
 	// PSXPostProcessing ==============================================================================================
@@ -127,7 +127,7 @@ public class PSXPostProcessing implements Disposable {
 	 *  @return self **/
 	public PSXPostProcessing setInputResolution(Vector2 resolution) {
 		if (resolution == null) {
-			if (GDXPSX.THROW_EXCEPTIONS) throw new NullPointerException("resolution can't be null!");
+			if (GDXPSX.throwExceptions) throw new NullPointerException("resolution can't be null!");
 			return this;
 		}
 		
@@ -173,7 +173,7 @@ public class PSXPostProcessing implements Disposable {
 	 *  @return self **/
 	public PSXPostProcessing setResolutionDownscalingFitToResolution(Vector2 targetResolution) {
 		if (targetResolution == null) {
-			if (GDXPSX.THROW_EXCEPTIONS) throw new NullPointerException("targetResolution can't be null!");
+			if (GDXPSX.throwExceptions) throw new NullPointerException("targetResolution can't be null!");
 			return this;
 		}
 		
@@ -196,7 +196,7 @@ public class PSXPostProcessing implements Disposable {
 	 *  @return self **/
 	public PSXPostProcessing setResolutionDownscaling(ResolutionDownscalingType type, Vector2 targetResolution, float targetFactor) {
 		if (targetResolution == null) {
-			if (GDXPSX.THROW_EXCEPTIONS) throw new NullPointerException();
+			if (GDXPSX.throwExceptions) throw new NullPointerException();
 			return this;
 		}
 		
@@ -214,7 +214,7 @@ public class PSXPostProcessing implements Disposable {
 		this.rdTargetResolution.set(MathUtils.clamp(targetWidth, 1, this.inputResolution.x), MathUtils.clamp(targetHeight, 1, this.inputResolution.y));
 		this.rdFactor = Math.max(1, targetFactor);
 		
-		if (this.shaderProgram != null && this.isDynamic && EXPLICIT_DYNAMIC_UNIFORM_UPDATES) {
+		if (this.shaderProgram != null && this.isDynamic && explicitDynamicUniformUpdates) {
 			this.bindResolutionDownscalingUniform();
 		}
 		return this;
@@ -262,7 +262,7 @@ public class PSXPostProcessing implements Disposable {
 			this.ditheringTexture = ditheringMatrix.obtainTexture();
 		}
 		
-		if (this.shaderProgram != null && this.isDynamic && EXPLICIT_DYNAMIC_UNIFORM_UPDATES) {
+		if (this.shaderProgram != null && this.isDynamic && explicitDynamicUniformUpdates) {
 			this.bindDitheringMatrixUniform();
 		}
 		
@@ -277,7 +277,7 @@ public class PSXPostProcessing implements Disposable {
 		this.ditheringScale = Math.max(0.01f, scale);
 		this.ditheringColorDepth = MathUtils.clamp(colorDepth, 1, 255);
 		
-		if (this.shaderProgram != null && this.isDynamic && EXPLICIT_DYNAMIC_UNIFORM_UPDATES) {
+		if (this.shaderProgram != null && this.isDynamic && explicitDynamicUniformUpdates) {
 			this.bindDitheringMatrixUniform();
 		}
 		
@@ -291,7 +291,7 @@ public class PSXPostProcessing implements Disposable {
 		if (glTarget > -1 && glTarget < 32) {
 			this.ditheringMatrixTextureTarget = glTarget;
 			
-			if (this.shaderProgram != null && this.isDynamic && EXPLICIT_DYNAMIC_UNIFORM_UPDATES) {
+			if (this.shaderProgram != null && this.isDynamic && explicitDynamicUniformUpdates) {
 				this.shaderProgram.setUniformi(UNIFORM_DITHERINGMATRIX_SAMPLER, glTarget);
 			}
 		} else GDXPSX.log(Level.WARNING, "You need to provide GL Active texture ID between 0 and 31 (inclusive)");
@@ -305,7 +305,7 @@ public class PSXPostProcessing implements Disposable {
 	 *  @return true if compilation was successful */
 	public boolean compile(boolean isDynamic) {
 		if (this.shaderProgram != null) this.shaderProgram.dispose();
-		if (VALIDATE_PARAMETERS && !validateParameters()) return false;
+		if (validateParameters && !validateParameters()) return false;
 		
 		String prefix = GDXPSX.EMPTY;
 		if (!isDynamic) {
@@ -320,10 +320,10 @@ public class PSXPostProcessing implements Disposable {
 			return false;
 		}
 		
-		if (SHADER_BINDING_BUFFER != null) {
+		if (shaderBindingBuffer != null) {
 			// trying to avoid already full buffer, but i'm not sure it will work properly
-			if (SHADER_BINDING_BUFFER.position() > 0) SHADER_BINDING_BUFFER.flip();
-			Gdx.gl20.glGetIntegerv(GL20.GL_CURRENT_PROGRAM, SHADER_BINDING_BUFFER);
+			if (shaderBindingBuffer.position() > 0) shaderBindingBuffer.flip();
+			Gdx.gl20.glGetIntegerv(GL20.GL_CURRENT_PROGRAM, shaderBindingBuffer);
 		}
 		
 		this.shaderProgram.bind();
@@ -336,10 +336,10 @@ public class PSXPostProcessing implements Disposable {
 			this.bindDitheringMatrixUniform();
 		}
 		
-		if (SHADER_BINDING_BUFFER != null) {
-			SHADER_BINDING_BUFFER.flip();
-			Gdx.gl20.glUseProgram(SHADER_BINDING_BUFFER.get());
-			SHADER_BINDING_BUFFER.flip();
+		if (shaderBindingBuffer != null) {
+			shaderBindingBuffer.flip();
+			Gdx.gl20.glUseProgram(shaderBindingBuffer.get());
+			shaderBindingBuffer.flip();
 		}
 		
 		return true;
