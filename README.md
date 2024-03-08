@@ -7,11 +7,18 @@
 graphics with few simple steps!
 If you have questions or suggestions for this project, or you want to just chat about it - welcome to our [discord](https://discord.gg/2FqQQxyFS8).
 
-## Features:
-- Vertex Jitter (Vertex Snapping)
+## 3D Features:
+- Vertex Snapping (Vertex Jitter)
+- Texture Affine Mapping
+- LUT-Mapping (Diffuse, Specular, Emissive)
+
+## 2D Post-processing Features:
 - Screen dithering with Bayer matrices based on Color depth reduction
 - Resolution downscaling to specific resolution and by factor
-With few deprecated features like texture color depth reduction :b
+
+## Work in progress
+- Demo application
+- 3D effects support for Decals
 
 ## Demo:
 You can look at demo [here](https://m3.fxg.by/gdxpsx.mp4)

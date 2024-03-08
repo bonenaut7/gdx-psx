@@ -79,7 +79,7 @@ varying float v_opacity;
 	#endif //emissiveColorFlag
 	
 	//[LUT TEXTURES]===================
-	#ifdef LUTFlag
+	#ifdef LUTMappingFlag
 		#ifdef diffuseLUTFlag
 		uniform sampler2D u_diffuseLUT;
 		#endif //diffuseLUTFlag
@@ -200,44 +200,39 @@ varying float v_fog;
 #endif //fogFlag
 
 //[GDX-PSX]==========================================================================================
-#ifdef psxTextureAffinenessFlag
-varying float v_psxTextureAffineness;
+#ifdef psxTextureAffineMappingFlag
+varying float v_psxTextureAffineMapping;
+#define _texAfMap / v_psxTextureAffineMapping
+#else
+#define _texAfMap
 #endif
-
-vec2 psxModifyUV(vec2 originalUV) {
-	#ifdef psxTextureAffinenessFlag
-	return originalUV / v_psxTextureAffineness;
-	#else
-	return originalUV;
-	#endif
-}
 
 //[SHADER]===========================================================================================
 void main() {
 	//[TEXTURES]=====================================================================================
 	#if defined(diffuseTextureFlag) && defined(diffuseColorFlag) && defined(colorFlag)
-		#if defined(LUTFlag) && defined(diffuseLUTFlag)
-			vec4 diffuse = applyLUT(texture2D(u_diffuseTexture, psxModifyUV(v_diffuseUV)), u_diffuseLUT) * u_diffuseColor * v_color;
+		#if defined(LUTMappingFlag) && defined(diffuseLUTFlag)
+			vec4 diffuse = applyLUT(texture2D(u_diffuseTexture, v_diffuseUV _texAfMap), u_diffuseLUT) * u_diffuseColor * v_color;
 		#else
-			vec4 diffuse = texture2D(u_diffuseTexture, psxModifyUV(v_diffuseUV)) * u_diffuseColor * v_color;
+ 			vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV _texAfMap) * u_diffuseColor * v_color;
 		#endif //LUT
 	#elif defined(diffuseTextureFlag) && defined(diffuseColorFlag)
-		#if defined(LUTFlag) && defined(diffuseLUTFlag)
-			vec4 diffuse = applyLUT(texture2D(u_diffuseTexture, psxModifyUV(v_diffuseUV)), u_diffuseLUT) * u_diffuseColor;
+		#if defined(LUTMappingFlag) && defined(diffuseLUTFlag)
+			vec4 diffuse = applyLUT(texture2D(u_diffuseTexture, v_diffuseUV _texAfMap), u_diffuseLUT) * u_diffuseColor;
 		#else
-			vec4 diffuse = texture2D(u_diffuseTexture, psxModifyUV(v_diffuseUV)) * u_diffuseColor;
+			vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV _texAfMap) * u_diffuseColor;
 		#endif //LUT
 	#elif defined(diffuseTextureFlag) && defined(colorFlag)
-		#if defined(LUTFlag) && defined(diffuseLUTFlag)
-			vec4 diffuse = applyLUT(texture2D(u_diffuseTexture, psxModifyUV(v_diffuseUV)), u_diffuseLUT) * v_color;
+		#if defined(LUTMappingFlag) && defined(diffuseLUTFlag)
+			vec4 diffuse = applyLUT(texture2D(u_diffuseTexture, v_diffuseUV _texAfMap), u_diffuseLUT) * v_color;
 		#else
-			vec4 diffuse = texture2D(u_diffuseTexture, psxModifyUV(v_diffuseUV)) * v_color;
+			vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV _texAfMap) * v_color;
 		#endif //LUT
 	#elif defined(diffuseTextureFlag)
-		#if defined(LUTFlag) && defined(diffuseLUTFlag)
-			vec4 diffuse = applyLUT(texture2D(u_diffuseTexture, psxModifyUV(v_diffuseUV)), u_diffuseLUT);
+		#if defined(LUTMappingFlag) && defined(diffuseLUTFlag)
+			vec4 diffuse = applyLUT(texture2D(u_diffuseTexture, v_diffuseUV _texAfMap), u_diffuseLUT);
 		#else
-			vec4 diffuse = texture2D(u_diffuseTexture, psxModifyUV(v_diffuseUV));
+			vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV _texAfMap);
 		#endif //LUT
 	#elif defined(diffuseColorFlag) && defined(colorFlag)
 		vec4 diffuse = u_diffuseColor * v_color;
@@ -250,16 +245,16 @@ void main() {
 	#endif //DIFFUSE
 	
 	#if defined(emissiveTextureFlag) && defined(emissiveColorFlag)
-		#if defined(LUTFlag) && defined(emissiveLUTFlag)
-			vec4 emissive =  applyLUT(texture2D(u_emissiveTexture, psxModifyUV(v_emissiveUV)), u_emissiveLUT) * u_emissiveColor;
+		#if defined(LUTMappingFlag) && defined(emissiveLUTFlag)
+ 			vec4 emissive =  applyLUT(texture2D(u_emissiveTexture, v_emissiveUV _texAfMap), u_emissiveLUT) * u_emissiveColor;
 		#else
-			vec4 emissive = texture2D(u_emissiveTexture, psxModifyUV(v_emissiveUV)) * u_emissiveColor;
+			vec4 emissive = texture2D(u_emissiveTexture, v_emissiveUV _texAfMap) * u_emissiveColor;
 		#endif //LUT
 	#elif defined(emissiveTextureFlag)
-		#if defined(LUTFlag) && defined(emissiveLUTFlag)
-			vec4 emissive =  applyLUT(texture2D(u_emissiveTexture, psxModifyUV(v_emissiveUV)), u_emissiveLUT);
+		#if defined(LUTMappingFlag) && defined(emissiveLUTFlag)
+			vec4 emissive =  applyLUT(texture2D(u_emissiveTexture, v_emissiveUV _texAfMap), u_emissiveLUT);
 		#else
-			vec4 emissive = texture2D(u_emissiveTexture, psxModifyUV(v_emissiveUV));
+			vec4 emissive = texture2D(u_emissiveTexture, v_emissiveUV _texAfMap);
 		#endif //LUT
 	#elif defined(emissiveColorFlag)
 		vec4 emissive = u_emissiveColor;
@@ -365,16 +360,16 @@ void main() {
 		#endif
 	#else
 		#if defined(specularTextureFlag) && defined(specularColorFlag)
-			#if defined(LUTFlag) && defined(specularLUTFlag)
-				vec3 specular = applyLUT(texture2D(u_specularTexture, psxModifyUV(v_specularUV)), u_specularLUT).rgb * u_specularColor.rgb * lightSpecular;
+			#if defined(LUTMappingFlag) && defined(specularLUTFlag)
+				vec3 specular = applyLUT(texture2D(u_specularTexture, v_specularUV _texAfMap), u_specularLUT).rgb * u_specularColor.rgb * lightSpecular;
 			#else
-				vec3 specular = texture2D(u_specularTexture, psxModifyUV(v_specularUV)).rgb * u_specularColor.rgb * lightSpecular;
+				vec3 specular = texture2D(u_specularTexture, v_specularUV _texAfMap).rgb * u_specularColor.rgb * lightSpecular;
 			#endif //LUT
 		#elif defined(specularTextureFlag)
-			#if defined(LUTFlag) && defined(specularLUTFlag)
-				vec3 specular = applyLUT(texture2D(u_specularTexture, psxModifyUV(v_specularUV)), u_specularLUT).rgb * lightSpecular;
+			#if defined(LUTMappingFlag) && defined(specularLUTFlag)
+				vec3 specular = applyLUT(texture2D(u_specularTexture, v_specularUV _texAfMap), u_specularLUT).rgb * lightSpecular;
 			#else
-				vec3 specular = texture2D(u_specularTexture, psxModifyUV(v_specularUV)).rgb * lightSpecular;
+				vec3 specular = texture2D(u_specularTexture, v_specularUV _texAfMap).rgb * lightSpecular;
 			#endif //LUT
 		#elif defined(specularColorFlag)
 			vec3 specular = u_specularColor.rgb * lightSpecular;

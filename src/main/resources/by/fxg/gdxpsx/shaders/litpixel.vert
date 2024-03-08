@@ -132,26 +132,22 @@ varying float v_fog;
 #endif //fogFlag
 
 //[GDX-PSX]==========================================================================================
-#ifdef psxVertexJitterFlag
-uniform float u_psxVertexJitter;
-#endif //psxVertexJitterFlag
+#ifdef psxVertexSnappingFlag
+uniform float u_psxVertexSnapping;
+#endif //psxVertexSnappingFlag
 
-#ifdef psxTextureJitterFlag
-//uniform float u_psxTextureJitter;
-#endif //psxTextureJitterFlag
-
-#ifdef psxTextureAffinenessFlag
-uniform float u_psxTextureAffineness;
-varying float v_psxTextureAffineness;
-#endif //psxTextureAffinenessFlag
+#ifdef psxTextureAffineMappingFlag
+uniform float u_psxTextureAffineMapping;
+varying float v_psxTextureAffineMapping;
+#endif //psxTextureAffineMappingFlag
 
 vec2 psxModifyUV(vec2 originUV) {
 	//#ifdef psxTextureJitterFlag Not implemented
 	//originUV = round(originUV * u_psxTextureJitter) / u_psxTextureJitter;
 	//#endif //psxTextureJitterFlag
-	#ifdef psxTextureAffinenessFlag
-	originUV *= v_psxTextureAffineness;
-	#endif //psxTextureAffinenessFlag
+	#ifdef psxTextureAffineMappingFlag
+	originUV *= v_psxTextureAffineMapping;
+	#endif //psxTextureAffineMappingFlag
 	return originUV;
 }
 
@@ -215,13 +211,13 @@ void main() {
 	gl_Position = u_projViewTrans * v_position;
 
 	//[GDX-PSX]======================================================================================
-	#ifdef psxVertexJitterFlag
-		gl_Position.xy = manualRound(gl_Position.xy * u_psxVertexJitter) / u_psxVertexJitter;
-	#endif //psxVertexJitterFlag
+	#ifdef psxVertexSnappingFlag
+		gl_Position.xy = manualRound(gl_Position.xy * u_psxVertexSnapping) / u_psxVertexSnapping;
+	#endif //psxVertexSnappingFlag
 	
-	#ifdef psxTextureAffinenessFlag
-		v_psxTextureAffineness = 1.0 - ((1.0 - gl_Position.w) * u_psxTextureAffineness);
-	#endif //psxTextureAffinenessFlag
+	#ifdef psxTextureAffineMappingFlag
+		v_psxTextureAffineMapping = 1.0 - ((1.0 - gl_Position.w) * u_psxTextureAffineMapping);
+	#endif //psxTextureAffineMappingFlag
 	
 	#ifdef diffuseTextureFlag
 		v_diffuseUV = psxModifyUV(v_diffuseUV);

@@ -10,18 +10,18 @@ import by.fxg.gdxpsx.g3d.attributes.AttributePSXEffect;
 import by.fxg.gdxpsx.g3d.attributes.LookupTextureAttribute;
 
 public class PSXShader extends DefaultShader {
-	public final static Uniform psxVertexJitterUniform = new Uniform("u_psxVertexJitter", AttributePSXEffect.vertexJitter);
+	public final static Uniform psxVertexJitterUniform = new Uniform("u_psxVertexSnapping", AttributePSXEffect.vertexSnapping);
 	public final static Setter psxVertexJitterSetter = new LocalSetter() {
 		public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-			AttributePSXEffect psxEffect = combinedAttributes.get(AttributePSXEffect.class, AttributePSXEffect.vertexJitter);
+			AttributePSXEffect psxEffect = combinedAttributes.get(AttributePSXEffect.class, AttributePSXEffect.vertexSnapping);
 			shader.set(inputID, psxEffect.strength);
 		}
 	};
 	
-	public final static Uniform psxTextureAffinenessUniform = new Uniform("u_psxTextureAffineness", AttributePSXEffect.textureAffineness);
+	public final static Uniform psxTextureAffinenessUniform = new Uniform("u_psxTextureAffineMapping", AttributePSXEffect.textureAffineMapping);
 	public final static Setter psxTextureAffinenessSetter = new LocalSetter() {
 		public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-			AttributePSXEffect psxEffect = combinedAttributes.get(AttributePSXEffect.class, AttributePSXEffect.textureAffineness);
+			AttributePSXEffect psxEffect = combinedAttributes.get(AttributePSXEffect.class, AttributePSXEffect.textureAffineMapping);
 			shader.set(inputID, psxEffect.strength);
 		}	
 	};
@@ -79,10 +79,10 @@ public class PSXShader extends DefaultShader {
 		Attributes attributes = combineAttributes(renderable);
 		final long attributesMask = attributes.getMask();
 		
-		if (hasFlag(attributesMask, AttributePSXEffect.vertexJitter)) prefix += "#define " + AttributePSXEffect.vertexJitterAlias + "Flag\n";
-		if (hasFlag(attributesMask, AttributePSXEffect.textureAffineness)) prefix += "#define " + AttributePSXEffect.textureAffinenessAlias + "Flag\n";
+		if (hasFlag(attributesMask, AttributePSXEffect.vertexSnapping)) prefix += "#define " + AttributePSXEffect.vertexSnappingAlias + "Flag\n";
+		if (hasFlag(attributesMask, AttributePSXEffect.textureAffineMapping)) prefix += "#define " + AttributePSXEffect.textureAffineMappingAlias + "Flag\n";
 		if (hasFlag(attributesMask, LookupTextureAttribute.diffuseLUT) || hasFlag(attributesMask, LookupTextureAttribute.specularLUT) || hasFlag(attributesMask, LookupTextureAttribute.emissiveLUT)) {
-			prefix += "#define LUTFlag\n";
+			prefix += "#define " + LookupTextureAttribute.LUTMappingAlias + "Flag\n";
 			if (hasFlag(attributesMask, LookupTextureAttribute.diffuseLUT)) prefix += "#define " + LookupTextureAttribute.diffuseLUTAlias + "Flag\n";
 			if (hasFlag(attributesMask, LookupTextureAttribute.specularLUT)) prefix += "#define " + LookupTextureAttribute.specularLUTAlias + "Flag\n";
 			if (hasFlag(attributesMask, LookupTextureAttribute.emissiveLUT)) prefix += "#define " + LookupTextureAttribute.emissiveLUTAlias + "Flag\n";

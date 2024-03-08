@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 /** Lookup table texture attribute
  *  @see Wikipedia: <a href="https://en.wikipedia.org/wiki/Lookup_table">Lookup Tables</a> **/
 public class LookupTextureAttribute extends Attribute {
+	public static final String LUTMappingAlias = "LUTMapping";
 	public static final String diffuseLUTAlias = "diffuseLUT";
 	public static final long diffuseLUT = register(diffuseLUTAlias);
 	public static final String specularLUTAlias = "specularLUT";
