@@ -22,6 +22,10 @@ public class PSXShaderProvider extends BaseShaderProvider {
 		this(DEFAULT_SHADER_TYPE, new DefaultShader.Config());
 	}
 	
+	public PSXShaderProvider(PSXShaderType shaderType) {
+		this(shaderType, new DefaultShader.Config());
+	}
+	
 	public PSXShaderProvider(final FileHandle vertexShader, final FileHandle fragmentShader) {
 		this(vertexShader.readString(), fragmentShader.readString());
 	}
