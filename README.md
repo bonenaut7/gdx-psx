@@ -16,9 +16,10 @@ If you have questions or suggestions for this project, or you want to just chat 
 - Screen dithering with Bayer matrices based on Color depth reduction
 - Resolution downscaling to specific resolution and by factor
 
-## Work in progress
+## Planned / Work in progress Features
 - Demo application
 - 3D effects support for Decals
+- 2D screen dithering with customizable color palettes (for example as image from Lospec)
 
 ## Demo:
 You can look at demo [here](https://m3.fxg.by/gdxpsx.mp4)
