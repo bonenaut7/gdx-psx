@@ -14,23 +14,30 @@ public final class GDXPSX {
 	public static Level MIN_LOG_LEVEL = Level.INFO;
 	public static boolean THROW_EXCEPTIONS = true;
 	
+	/** Enables debug mode for logging, enables exceptions **/
 	public static void enableDebug() {
 		LOG_MESSAGES = true;
 		MIN_LOG_LEVEL = Level.ALL;
 		THROW_EXCEPTIONS = true;
 	}
 	
+	/** Sets defaults for logging and enables exceptions **/
 	public static void setDefaults() {
 		LOG_MESSAGES = true;
 		MIN_LOG_LEVEL = Level.INFO;
 		THROW_EXCEPTIONS = true;
 	}
 	
+	/** "Work quietly" mode, disables logging and exceptions **/
 	public static void keepSilence() {
 		LOG_MESSAGES = false;
 		THROW_EXCEPTIONS = false;
 	}
 
+	/** Method for logging messages and throwing exceptions :b
+	 *  @param level - Logging level for message, starting from SEVERE throws
+	 *    {@link GdxRuntimeException} with message from #array parameter 
+	 *  @param array - message that will be combined via {@link StringBuilder} **/
 	public static void log(Level level, Object... array) {
 		if (!LOG_MESSAGES) return;
 		if (level.intValue() < MIN_LOG_LEVEL.intValue()) return;
@@ -47,12 +54,6 @@ public final class GDXPSX {
 		} else {
 			LOGGER.log(level, builder.toString());
 		}
-	}
-	
-	/** If some advanced functions like {@link PSXPostProcessing#CACHE_ACTIVE_SHADER_BINDING} are used
-	 *    in the end of your app call this method to dispose static resources **/
-	public static void disposeResources() {
-		
 	}
 	
 	// Private constructor, believe me you don't need a GDXPSX object >:(
