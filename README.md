@@ -42,6 +42,8 @@ allprojects {
 ```
 dependencies {
     ...
+    implementation 'com.github.bonenaut7:gdx-psx:$gdxpsxVersion'
+    // if first variant doesn't work, choose the other one below
     implementation 'com.github.fxgaming:gdx-psx:$gdxpsxVersion'
 }
 ```
@@ -52,6 +54,8 @@ dependencies {
 ```
 dependencies {
     ...
+    api "com.github.bonenaut7:gdx-psx:$gdxpsxVersion:sources"
+    // if first variant doesn't work, choose the other one below
     api "com.github.fxgaming:gdx-psx:$gdxpsxVersion:sources"
 }
 ```
