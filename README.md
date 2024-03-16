@@ -75,8 +75,8 @@ Library can provide Vertex Jitter effect to your models (via `ModelBatch`)
 //Create ModelBatch with PSX shader provider (You can also specify type of shader you need with PSXShaderType enum)
 ModelBatch myModelBatch = new ModelBatch(new PSXShaderProvider());
 Environmment environment = new Environment();
-environment.set(AttributePSXEffect.createVertexJitter(4.0F)); //add vertex jitter effect with 4.0 strength
-environment.set(AttributePSXEffect.createTextureAffineness(0.5F)); //add texture affineness effect with 50% contribution
+environment.set(AttributePSXEffect.createVertexSnapping(4.0F)); //add vertex snapping effect with 4.0 strength
+environment.set(AttributePSXEffect.createTextureAffineMapping(0.5F)); //add affine texture mapping effect with 50% contribution
 //Then you can render your models with environment, or add attributes primarily to your model materials!
 ```
 
