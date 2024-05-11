@@ -1,7 +1,7 @@
 
 [![](https://jitpack.io/v/fxgaming/gdx-psx.svg)](https://jitpack.io/#fxgaming/gdx-psx) [![](https://img.shields.io/badge/Community-Discord-5865F2)](https://discord.gg/2FqQQxyFS8)
 # gdx-psx
-![](https://m3.fxg.by/psxlogo.gif) 
+![](https://bonenaut7.wtf/psxlogo.gif) 
 
 **gdx-psx** its a library for [**LibGDX**](https://github.com/libgdx/libgdx) designed to assist you in simulation of PlayStation 1
 graphics with few simple steps!
@@ -22,7 +22,7 @@ If you have questions or suggestions for this project, or you want to just chat 
 - 2D screen dithering with customizable color palettes (for example as image from Lospec)
 
 ## Demo:
-You can look at demo [here](https://m3.fxg.by/gdxpsx.mp4)
+You can look at demo [here](https://bonenaut7.wtf/gdxpsx.mp4)
 
 # Install
 1. Add JitPack repository in your root build.gradle at the end of repositories:
