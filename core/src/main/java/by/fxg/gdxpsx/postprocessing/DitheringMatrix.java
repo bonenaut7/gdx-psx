@@ -18,12 +18,14 @@ public final class DitheringMatrix {
 	public static final DitheringMatrix BAYER_3x3 = new DitheringMatrix(3, 3, Gdx.files.classpath("by/fxg/gdxpsx/matrices/bayer3x3.png"));
 	public static final DitheringMatrix BAYER_2x2 = new DitheringMatrix(2, 2, Gdx.files.classpath("by/fxg/gdxpsx/matrices/bayer2x2.png"));
 	
-	protected float textureWidth;
-	protected float textureHeight;
+	public final float textureWidth;
+	public final float textureHeight;
 	protected FileHandle pathToTexture;
 	
-	private DitheringMatrix() {}
-	private DitheringMatrix(float textureWidth, float textureHeight) { this(textureWidth, textureHeight, null); }
+	private DitheringMatrix(float textureWidth, float textureHeight) {
+		this(textureWidth, textureHeight, null);
+	}
+	
 	private DitheringMatrix(float textureWidth, float textureHeight, FileHandle pathToTexture) {
 		this.textureWidth = textureWidth;
 		this.textureHeight = textureHeight;
