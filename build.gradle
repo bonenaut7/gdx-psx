@@ -8,37 +8,68 @@ buildscript {
 	}
 }
 
-plugins {
-	id 'java-library'
-	id 'maven-publish'
+allprojects {
+	apply plugin: 'eclipse'
+	apply plugin: 'idea'
+
+	group = 'io.github.bonenaut7'
+	version = '0.2.1'
+	ext.libName = 'gdx-psx'
 }
 
-group 'io.github.bonenaut7'
-version '0.2.1'
-apply from: 'publishing.gradle'
+subprojects {
+	apply plugin: 'java-library'
+	apply plugin: 'maven-publish'
+	
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+	
+	// Publishing
+	javadoc {
+		failOnError false
+		options.addStringOption('Xdoclint:none', '-quiet')
+		options.addStringOption('encoding', 'UTF-8')
+		options.addStringOption('charSet', 'UTF-8')
+	}
 
-ext {
-	gdxVersion = '1.12.1'
+	java {
+		withJavadocJar()
+		withSourcesJar()
+	}
+
+	publishing {
+		publications {
+			maven(MavenPublication) {
+				groupId = project.group
+				artifactId = project.name
+				version = project.version
+				pom {
+					name = "gdx-psx"
+					description = "LibGDX PSX-style render features"
+					url = "https://github.com/bonenaut7/gdx-psx"
+					licenses {
+						license {
+							name = "The MIT License"
+							url = "https://opensource.org/license/MIT"
+						}
+					}
+				}
+				from components.java
+			}
+		}
+	}
+
+	// Repos
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		maven { url 'https://jitpack.io' }
+	}
+	
+	// ???
+	compileJava {
+		options.incremental = true
+	}
+	
+	[compileJava]*.options*.encoding = 'UTF-8'
 }
-
-repositories {
-	mavenLocal()
-	mavenCentral()
-	maven { url 'https://jitpack.io' }
-}
-
-dependencies {
-	implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
-	implementation 'com.github.jitpack:gradle-simple:1.0'
-}
-
-java {
-	sourceCompatibility = 8
-	targetCompatibility = 8
-}
-
-compileJava {
-	options.incremental = true
-}
-
-[compileJava]*.options*.encoding = 'UTF-8'

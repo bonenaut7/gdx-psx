@@ -1,0 +1,6 @@
+eclipse.project.name = libName + '-core'
+
+dependencies {
+	implementation 'com.badlogicgames.gdx:gdx:1.12.1'
+	implementation 'com.github.jitpack:gradle-simple:1.0'
+}
