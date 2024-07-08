@@ -24,7 +24,6 @@
     <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/litpixel.frag" />
     <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/litvertex.vert" />
     <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/litvertex.frag" />
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/psx.3d.vert" />
 
     <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/matrices/bayer2x2.png" />
     <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/matrices/bayer3x3.png" />
