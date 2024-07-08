@@ -59,14 +59,10 @@ public class PSXPostProcessing implements Disposable {
 	}
 	
 	// PSXPostProcessing ==============================================================================================
-	protected static final String UNIFORM_RESOLUTIONDOWNSCALING = "u_resDownscaling";			// vec4, [resolutionX, resolutionY, invResolutionX, invResolutionY]
-	protected static final String UNIFORM_DITHERINGMATRIX_SAMPLER = "u_ditherMatrixTexture";	// sampler2d, Dithering matrix texture
-	protected static final String UNIFORM_DITHERINGMATRIX_DATA = "u_ditheringData";				// vec3, [resolutionX, resolutionY, colorDepth]
+	public static final String UNIFORM_RESOLUTIONDOWNSCALING = "u_resDownscaling";			// vec4, [resolutionX, resolutionY, invResolutionX, invResolutionY]
+	public static final String UNIFORM_DITHERINGMATRIX_SAMPLER = "u_ditherMatrixTexture";	// sampler2d, Dithering matrix texture
+	public static final String UNIFORM_DITHERINGMATRIX_DATA = "u_ditheringData";			// vec3, [resolutionX, resolutionY, colorDepth]
 	
-	/** Vertex shader source **/
-	protected String vertexShader;
-	/** Fragment shader source **/
-	protected String fragmentShader;
 	/** {@link ShaderProgram} build from sources with prefix **/
 	protected ShaderProgram shaderProgram;
 	
