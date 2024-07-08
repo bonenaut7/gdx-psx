@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 
 /** 
  *  This class using for texture modifying (<b>Color depth change, Resizing</b>).
- *  @deprecated Will be removed in 2.1 and replaced with attribute for the {@link PSXShader} and {@link PSXShaderProvider}
+ *  @deprecated Will be removed in 0.3.0 and replaced with attribute for the {@link PSXShader} and {@link PSXShaderProvider}
  */
 @Deprecated
 public final class TextureTransformer {
