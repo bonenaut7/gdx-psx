@@ -1,4 +1,4 @@
-package by.fxg.gdxpsx.g3d;
+package by.bonenaut7.gdxpsx.g3d;
 
 public enum PSXShaderType {
 	/** PSXShader with per-vertex lighting **/

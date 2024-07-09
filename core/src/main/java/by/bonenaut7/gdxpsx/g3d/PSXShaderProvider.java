@@ -1,4 +1,4 @@
-package by.fxg.gdxpsx.g3d;
+package by.bonenaut7.gdxpsx.g3d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

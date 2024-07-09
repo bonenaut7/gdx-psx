@@ -1,4 +1,4 @@
-package by.fxg.gdxpsx.g3d.attributes;
+package by.bonenaut7.gdxpsx.g3d.attributes;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;

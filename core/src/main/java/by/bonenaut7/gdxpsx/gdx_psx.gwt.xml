@@ -4,7 +4,7 @@
 <!-- To compile to Gwt, you need to reference this file in your master .gwt.xml
      file (usually called GdxDefinition.gwt.xml) as follows:
 
-     <inherits name="by.fxg.gdxpsx.gdx_psx"/>
+     <inherits name="by.bonenaut7.gdxpsx.gdx_psx"/>
 
 	 Note, you should not have a .gwt.xml file in the root of your resources/
 	 folder. That was the way this template handled GWT in earlier versions,
@@ -24,11 +24,6 @@
     <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/litpixel.frag" />
     <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/litvertex.vert" />
     <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/litvertex.frag" />
-
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/matrices/bayer2x2.png" />
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/matrices/bayer3x3.png" />
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/matrices/bayer4x4.png" />
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/matrices/bayer8x8.png" />
 
     <!-- This is a good idea because so much GWT-specific code needs libGDX,
          like the libGDX reflection code. These "inherits" names are period-separated. -->

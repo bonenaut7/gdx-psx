@@ -1,4 +1,4 @@
-package by.fxg.gdxpsx.g3d;
+package by.bonenaut7.gdxpsx.g3d;
 
 import com.badlogic.gdx.graphics.g3d.Attributes;
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
-import by.fxg.gdxpsx.g3d.attributes.AttributePSXEffect;
-import by.fxg.gdxpsx.g3d.attributes.LookupTextureAttribute;
+import by.bonenaut7.gdxpsx.g3d.attributes.AttributePSXEffect;
+import by.bonenaut7.gdxpsx.g3d.attributes.LookupTextureAttribute;
 
 public class PSXShader extends DefaultShader {
 	public final static Uniform psxVertexJitterUniform = new Uniform("u_psxVertexSnapping", AttributePSXEffect.vertexSnapping);
