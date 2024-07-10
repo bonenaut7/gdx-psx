@@ -46,12 +46,12 @@ public class PSXShaderProvider extends BaseShaderProvider {
 		if (shaderType != null) {
 			switch (shaderType) {
 				case LIT_PerVertexLighting: {
-					this.config.vertexShader = Gdx.files.classpath("by/fxg/gdxpsx/shaders/litvertex.vert").readString();
-					this.config.fragmentShader = Gdx.files.classpath("by/fxg/gdxpsx/shaders/litvertex.frag").readString();
+					this.config.vertexShader = Gdx.files.classpath("by/bonenaut7/gdxpsx/shaders/litvertex.vert").readString();
+					this.config.fragmentShader = Gdx.files.classpath("by/bonenaut7/gdxpsx/shaders/litvertex.frag").readString();
 				} break;
 				case LIT_PerFragmentLighting: {
-					this.config.vertexShader = Gdx.files.classpath("by/fxg/gdxpsx/shaders/litpixel.vert").readString();
-					this.config.fragmentShader = Gdx.files.classpath("by/fxg/gdxpsx/shaders/litpixel.frag").readString();
+					this.config.vertexShader = Gdx.files.classpath("by/bonenaut7/gdxpsx/shaders/litpixel.vert").readString();
+					this.config.fragmentShader = Gdx.files.classpath("by/bonenaut7/gdxpsx/shaders/litpixel.frag").readString();
 				} break;
 			}
 		}
