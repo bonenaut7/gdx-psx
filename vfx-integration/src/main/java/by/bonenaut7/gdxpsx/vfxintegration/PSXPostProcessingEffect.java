@@ -1,4 +1,4 @@
-package by.fxg.gdxpsx.vfxintegration;
+package by.bonenaut7.gdxpsx.vfxintegration;
 
 import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.effects.AbstractVfxEffect;

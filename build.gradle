@@ -12,8 +12,6 @@ allprojects {
 	apply plugin: 'eclipse'
 	apply plugin: 'idea'
 
-	group = 'io.github.bonenaut7'
-	version = '0.2.1'
 	ext.libName = 'gdx-psx'
 }
 
@@ -37,15 +35,16 @@ subprojects {
 		withSourcesJar()
 	}
 
+	group = 'io.github.bonenaut7'
 	publishing {
 		publications {
 			maven(MavenPublication) {
 				groupId = project.group
-				artifactId = project.name
+				artifactId = project.publishingArtifactName
 				version = project.version
 				pom {
-					name = "gdx-psx"
-					description = "LibGDX PSX-style render features"
+					name = project.publishingArtifactName
+ 					description = project.description
 					url = "https://github.com/bonenaut7/gdx-psx"
 					licenses {
 						license {
