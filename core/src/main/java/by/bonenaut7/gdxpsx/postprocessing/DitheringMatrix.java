@@ -52,17 +52,6 @@ public class DitheringMatrix {
 		return this.matrix;
 	}
 	
-	public String generateDefinition() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append("float[").append(this.matrix.length).append("](");
-		for (int idx = 0; idx != this.matrix.length; idx++) {
-			builder.append(String.format(Locale.US, "%.4f, ", this.matrix[idx]));
-		}
-		final int length = builder.length();
-		builder.replace(length - 2, length, ") ");
-		return builder.toString();
-	}
-	
 	// Takes bayer level, 1 - 2x2, 2 - 4x4, 3 - 8x8 and so on
 	// This exists thanks to Kevin Cruijssen, https://codegolf.stackexchange.com/a/259685
 	public static float[] generateBayerMatrix(int bayerLevel) {

@@ -81,13 +81,30 @@ public final class PSXPostProcessingShaderStatic extends PSXPostProcessingShader
 			builder.append(String.format(Locale.US, "#define DITHERING_TABLE_SIZE_X %.2f\n", (float)this.ditheringMatrix.getSizeX()));
 			builder.append(String.format(Locale.US, "#define DITHERING_TABLE_SIZE_Y %.2f\n", (float)this.ditheringMatrix.getSizeY()));
 			builder.append(String.format(Locale.US, "#define DITHERING_TABLE_SIZE %d\n", this.ditheringMatrix.getSizeX() * this.ditheringMatrix.getSizeY()));
-			builder.append(String.format(Locale.US, "#define DITHERING_TABLE %s\n", this.ditheringMatrix.generateDefinition()));
+			builder.append(String.format(Locale.US, "#define DITHERING_TABLE %s\n", this.createDitheringTableDefinition()));
 		}
 		
 		// Color reduction
 		if (this.isColorReductionEnabled) {
 			builder.append(String.format(Locale.US, "#define COLOR_REDUCTION %.2f\n", this.colorReductionFactor));
 		}
+		
+		return builder.toString();
+	}
+	
+	// Generating dithering table definition is scary(because mostly it's shitcode for my shitty decisions)
+	private String createDitheringTableDefinition() {
+		final float[] matrix = this.ditheringMatrix.getMatrix();
+		final StringBuilder builder = new StringBuilder();
+		builder.append("float[").append(matrix.length).append("](");
+		
+		for (int idx = 0; idx != matrix.length; idx++) {
+			builder.append(String.format(Locale.US, "%.4f,", matrix[idx]));
+		}
+		
+		// Removing [,] and replacing it with [)] (without semicolon, because it should be present in shader)
+		final int length = builder.length();
+		builder.replace(length - 1, length, ")");
 		
 		return builder.toString();
 	}
