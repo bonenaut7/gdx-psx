@@ -1,0 +1,6 @@
+eclipse.project.name = libName + '-vfx-integration'
+
+dependencies {
+	implementation project(':core')
+	implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.4'
+}

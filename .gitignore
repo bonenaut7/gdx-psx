@@ -1,5 +1,6 @@
-## gdx-psx demo
+## gdx-psx
 demo/
+.local/
 
 ## Gradle
 .gradle
