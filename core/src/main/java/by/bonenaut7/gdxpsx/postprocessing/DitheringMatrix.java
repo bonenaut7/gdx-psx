@@ -10,6 +10,7 @@ public class DitheringMatrix {
 	public static final DitheringMatrix BAYER_16x16 = new DitheringMatrix(16, 16, generateBayerMatrix(4));
 	
 	// Values came from dither_lut field, https://github.com/whaison/psxact/blob/develop/src/gpu/gpu_draw.cpp
+	// It's actually very close to 4x4 Bayer matrix, but some values are slightly changed
 	public static final DitheringMatrix PSXACT_EMULATOR = new DitheringMatrix(4, new float[]{
 		-1f, 0f, -0.75f, 0.25f,
 		0.5f, -0.5f, 0.75f, -0.25f,
@@ -51,7 +52,6 @@ public class DitheringMatrix {
 		return this.matrix;
 	}
 	
-	
 	public String generateDefinition() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("float[").append(this.matrix.length).append("](");
@@ -64,7 +64,7 @@ public class DitheringMatrix {
 	}
 	
 	// Takes bayer level, 1 - 2x2, 2 - 4x4, 3 - 8x8 and so on
-	// https://codegolf.stackexchange.com/a/259685
+	// This exists thanks to Kevin Cruijssen, https://codegolf.stackexchange.com/a/259685
 	public static float[] generateBayerMatrix(int bayerLevel) {
 		final int size = 1 << bayerLevel;
 		final float[] array = new float[size * size];
