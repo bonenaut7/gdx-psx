@@ -16,6 +16,7 @@
     <source path=""/>
 
     <extend-configuration-property name="gdx.files.classpath" value="by/bonenaut7/gdxpsx/shaders/postprocessing.vert" />
+    <extend-configuration-property name="gdx.files.classpath" value="by/bonenaut7/gdxpsx/shaders/postprocessing.notransform.vert" />
     <extend-configuration-property name="gdx.files.classpath" value="by/bonenaut7/gdxpsx/shaders/postprocessing.static.frag" />
     <extend-configuration-property name="gdx.files.classpath" value="by/bonenaut7/gdxpsx/shaders/litpixel.vert" />
     <extend-configuration-property name="gdx.files.classpath" value="by/bonenaut7/gdxpsx/shaders/litpixel.frag" />

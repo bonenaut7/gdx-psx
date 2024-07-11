@@ -17,6 +17,12 @@ public final class PSXPostProcessingShaderStatic extends PSXPostProcessingShader
 		this.update();
 	}
 	
+	public PSXPostProcessingShaderStatic(String vertexShader, String fragmentShader) {
+		this.vertexShader = vertexShader;
+		this.fragmentShader = fragmentShader;
+		this.update();
+	}
+	
 	@Override
 	public boolean update() {
 		if (this.shaderProgram != null) {
