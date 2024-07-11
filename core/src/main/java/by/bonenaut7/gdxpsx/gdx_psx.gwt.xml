@@ -15,15 +15,12 @@
          This path is slash-separated and is relative to this file. -->
     <source path=""/>
 
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/postprocessing.vert" />
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/postprocessing.dynamic.frag" />
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/postprocessing.static.frag" />
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/postprocessing.legacy.vert" />
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/postprocessing.legacy.frag" />
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/litpixel.vert" />
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/litpixel.frag" />
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/litvertex.vert" />
-    <extend-configuration-property name="gdx.files.classpath" value="by/fxg/gdxpsx/shaders/litvertex.frag" />
+    <extend-configuration-property name="gdx.files.classpath" value="by/bonenaut7/gdxpsx/shaders/postprocessing.vert" />
+    <extend-configuration-property name="gdx.files.classpath" value="by/bonenaut7/gdxpsx/shaders/postprocessing.static.frag" />
+    <extend-configuration-property name="gdx.files.classpath" value="by/bonenaut7/gdxpsx/shaders/litpixel.vert" />
+    <extend-configuration-property name="gdx.files.classpath" value="by/bonenaut7/gdxpsx/shaders/litpixel.frag" />
+    <extend-configuration-property name="gdx.files.classpath" value="by/bonenaut7/gdxpsx/shaders/litvertex.vert" />
+    <extend-configuration-property name="gdx.files.classpath" value="by/bonenaut7/gdxpsx/shaders/litvertex.frag" />
 
     <!-- This is a good idea because so much GWT-specific code needs libGDX,
          like the libGDX reflection code. These "inherits" names are period-separated. -->
