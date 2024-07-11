@@ -13,13 +13,14 @@ If you have questions or suggestions for this project, or you want to just chat 
 - LUT-Mapping (Diffuse, Specular, Emissive)
 
 ## 2D Post-processing Features:
-- Screen dithering with Bayer matrices based on Color depth reduction
-- Resolution downscaling to specific resolution and by factor
+- Screen dithering with built-in Bayer matrices (2x2, 4x4, 8x8, 16x16)
+- Color reduction (Simulation of low BPP values, sort of...)
+- Resolution downscaling to specific resolution and by scale
 
 ## Planned / Work in progress Features
 - Demo application
 - 3D effects support for Decals
-- 2D screen dithering with customizable color palettes (for example as image from Lospec)
+- Сustomizable color palettes for post-processing (for example as image from Lospec)
 
 ## Demo:
 You can look at demo [here](https://bonenaut7.wtf/gdxpsx.mp4)
@@ -34,7 +35,7 @@ allprojects {
     }
     ext {
         ...
-        gdxpsxVersion = '0.2.0'
+        gdxpsxVersion = '1.0.1'
     }
 }
 ```
@@ -42,34 +43,41 @@ allprojects {
 ```
 dependencies {
     ...
-    implementation 'com.github.bonenaut7:gdx-psx:$gdxpsxVersion'
-    // if first variant doesn't work, choose the other one below
-    implementation 'com.github.fxgaming:gdx-psx:$gdxpsxVersion'
+    implementation "com.github.bonenaut7.gdx-psx:gdx-psx-core:$gdxpsxVersion"
+}
+```
+
+### [GDX-VFX](https://github.com/crashinvaders/gdx-vfx) Integration (optional)
+3. Add vfx-integration dependency to use effects with [GDX-VFX](https://github.com/crashinvaders/gdx-vfx)
+```
+dependencies {
+    ...
+    implementation "com.github.bonenaut7.gdx-psx:gdx-psx-vfx-integration:$gdxpsxVersion"
 }
 ```
 
 ### GWT (optional)
-
-3. Add the sources dependency to your HTML gradle
+4. Add the sources dependency to your HTML gradle
 ```
 dependencies {
     ...
-    api "com.github.bonenaut7:gdx-psx:$gdxpsxVersion:sources"
-    // if first variant doesn't work, choose the other one below
-    api "com.github.fxgaming:gdx-psx:$gdxpsxVersion:sources"
+    api "com.github.bonenaut7.gdx-psx:gdx-psx-core:$gdxpsxVersion:sources"
+
+    // And if vfx-integration is used, add line blow too
+    api "com.github.bonenaut7.gdx-psx:gdx-psx-vfx-integration:$gdxpsxVersion:sources"
 }
 ```
 
-4. Inherit the module in your GdxDefinition.gwt.xml
+5. Inherit the module in your GdxDefinition.gwt.xml
 ```
-<inherits name="by.fxg.gdxpsx.gdx_psx"/>
+<inherits name="by.bonenaut7.gdxpsx.gdx_psx"/>
 ```
 
 # Quick start
 **gdx-psx** have a lot of configurable parameters, recommended to check
 the demo before starting work with library!
 
-### 3D Mesh effects (Vertex Jitter/Texture Affineness/LUT)
+### 3D Mesh effects (Vertex Jitter/Texture Affine Mapping/LUT)
 Library can provide Vertex Jitter effect to your models (via `ModelBatch`)
 ```java
 //Create ModelBatch with PSX shader provider (You can also specify type of shader you need with PSXShaderType enum)
@@ -80,66 +88,79 @@ environment.set(AttributePSXEffect.createTextureAffineMapping(0.5F)); //add affi
 //Then you can render your models with environment, or add attributes primarily to your model materials!
 ```
 
-### Post-processing (Downscaling, Color depth, Screen dithering)
-After 0.2 update things became slightly bigger than before. But believe me, this works faster than before!
-Along with speed, post-processing split to 2 different parts and now you can integrate Post-processing into something else with reference how `PSXPostProcessingWrapper` is made, or reuse FrameBuffer from it!
+### Post-processing (Downscaling, Screen dithering, Color reduction)
+After the release, gdx-psx are not using in-built Framebuffers **at all**.
 
 1. Create and customize post processing object
 ```java
-PSXPostProcessing postProcessing = new PSXPostProcessing(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-postProcessing.setDownscalingIntensity(4f);
-postProcessing.setColorDepth(32f, 32f, 32f);
-postProcessing.setDitheringMatrix(DitheringMatrix.BAYER_8x8);
+// Static variant is in-built one, but you can create yours if you want!
+PSXPostProcessingShader shader = new PSXPostProcessingShaderStatic();
+shader.setDownscalingEnabled(true); // Enable Resolution downscaling
+shader.setDownscalingFromScale(2f); // Set downscaling by scale, and make it twice smaller than input resolution
 
-// Simple - Use default filters and their parameters
-PSXPostProcessing postProcessing = new PSXPostProcessing();
-postProcessing.setDefaultParametersWithResolution();
+shader.setDitheringEnabled(true); // Enable Dithering
+shader.setDitheringScale(2f); // Set dithering scaling the same as downscaling, so it would look good
+shader.setDitheringIntensity(0.5f); // Make dithering intensity higher (default is 0.1)
+shader.setDitheringMatrix(DitheringMatrix.BAYER_16x16); // Use Bayer 16x16 dithering matrix
 
-// Flexible - Use your own values as you wish!
-PSXPostProcessing postProcessing = new MyPSXPostProcessingImpl(); // If you wish to add something
-postProcessing.setInputResolution(800, 600);
-postProcessing.setResolutionDownscalingFitToResolution(320, 240);
-postProcessing.setDitheringMatrix(DitheringMatrix.BAYER_4x4, 1, /* color depth */ 48f, /* scale */ 2f);
+shader.setColorReductionEnabled(true); // Enable Color reduction
+shader.setColorReduction(16f); // Set color reduction factor as 16 (255 will produce almost unchanged image)
+
+// Don't forget to set input resolution of your choice!
+shader.setInputResolution(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 ```
 
-2. After you set everything like you want, choose the shader type. There are 2 types of shaders: Static and Dynamic. Dynamic ones are more suitable for development stage because they're allowing to change parameters in real-time, Static type is more optimized and requires to recompile shader after any changes to apply them.
+2. Update the shader so all changes made before will be applied!
 ```java
-postProcessing.compile(true); // To compile dynamic shader
-postProcessing.compile(false); // To compile static shader
+shader.update();
 ```
 
-3. Setup wrapper for your post-processing object if you don't have any free framebuffer :)
+3. Use the shader with your batch! (Anything that will be drawn with batch will be processed with post-processing if shader is applied)
 ```java
-PSXPostProcessingWrapper wrapper = new PSXPostProcessingWrapper(postProcessing);
-wrapper.createFrameBuffer(); // create framebuffer with default parameters
-// or
-wrapper.createFrameBuffer(Format.RGB565, 400, 300, true); // create one with your parameters!
+batch.setShader(shader);
+// draw anything!
+batch.flush();
+// * magic * //
 ```
 
-4. Put everything into a render loop! You need to prepare a Batch before doing this
-```java
-wrapper.beginFrameBufferCapture();
-// rendering best horror game ever
-wrapper.endFrameBufferCapture();
+OR
 
-wrapper.drawPostProcessedTexture(batch);
-// or you can do this in a fashion way :*
-wrapper.drawPostProcessedTexture(batch, 0, 0, 1337, 420);
+4. Use framebuffer to capture your 3D data and post-process the result!
+```java
+// Application resolution
+int width = Gdx.graphics.getWidth();
+int height = Gdx.graphics.getHeight();
+
+// Creating framebuffer with `RGBA8888` format, app resolution and depth buffer to capture 3D data
+Framebuffer framebuffer = new Framebuffer(Format.RGBA8888, width, height, true);
+
+framebuffer.begin(); // Begin capturing with framebuffer
+Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); // Clear framebuffer
+// Render anything with ModelBatch for example
+framebuffer.end(); // Stop capturing with framebuffer
+
+batch.setShader(shader); // Apply shader to a batch
+batch.begin(); // Starting to draw with a batch
+// Draw framebuffer color texture upside down (because all framebuffers capture data upside down :b)
+batch.draw(framebuffer.getColorBufferTexture(), 0, 0, width, height, 0, 0, 1, 1);
+batch.end(); // Flushing everything that we drawn with batch and stop the batch
+
+// * magic * //
 ```
 
-### Textures (Texture shrinking, Deprecated)
-Library provides tool that helping you process textures and and downgrade their quality! <br/>
-Fast texture processing: <br/>
-`TextureTransformer.shrinkTexture(Pixmap, ResizeType, textureSizeFactor, colorDepthFactor);` <br/>
-or with recommended parameters: <br/>
-`TextureTransformer.shrinkTexture(pixmap, ResizeType.FORCE, 192f, 32f);` <br/>
-Instead of using `Pixmap` you can use `FileHandle` with your texture's path.
+OR
 
-If you need to process bigger amount of textures with specified parameters:
+5. In case if you're using vfx-integration you can do this!
 ```java
-TextureTransformer transformer = new TextureTransformer(); //using recommended parameters by default
-transformer.setResizeType(ResizeType.ACCORDING_TO_HEIGHT);
-transformer.setColorDepthFactor(32f);
-//...
-Texture newTexture = transformer.shrinkTexture(fileHandle);
+PSXPostProcessingEffect effect = new PSXPostProcessingEffect();
+PSXPostProcessingShader shader = effect.getConfiguration();
+// Configure shader as you wish, or as described in 1st step
+// But keep in mind that's not required to set input resolution while using gdx-vfx
+// PSXPostProcessingEffect manages input resolution by itself with help of gdx-vfx!
+
+// GDX-VFX's VfxManager
+VfxManager vfxManager = new VfxManager(Format.RGBA8888);
+vfxManager.addEffect(effect); // yay!
+
+// Then you can render anything as described in gdx-vfx quick guide!
 ```
