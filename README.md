@@ -63,7 +63,7 @@ dependencies {
     ...
     api "com.github.bonenaut7.gdx-psx:gdx-psx-core:$gdxpsxVersion:sources"
 
-    // And if vfx-integration is used, add line blow too
+    // And if vfx-integration is used, add this line below
     api "com.github.bonenaut7.gdx-psx:gdx-psx-vfx-integration:$gdxpsxVersion:sources"
 }
 ```
