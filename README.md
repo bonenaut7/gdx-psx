@@ -1,7 +1,6 @@
-
-[![](https://jitpack.io/v/fxgaming/gdx-psx.svg)](https://jitpack.io/#fxgaming/gdx-psx) [![](https://img.shields.io/badge/Community-Discord-5865F2)](https://discord.gg/2FqQQxyFS8)
+[![](https://jitpack.io/v/fxgaming/gdx-psx.svg)](https://jitpack.io/#fxgaming/gdx-psx)
 # gdx-psx
-![](https://bonenaut7.wtf/psxlogo.gif) 
+![](https://raw.githubusercontent.com/bonenaut7/gdx-psx/refs/heads/main/.github/gdxpsx.gif)
 
 **gdx-psx** its a library for [**LibGDX**](https://github.com/libgdx/libgdx) designed to assist you in simulation of PlayStation 1
 graphics with few simple steps!
@@ -22,10 +21,7 @@ If you have questions or suggestions for this project, or you want to just chat 
 - 3D effects support for Decals
 - Сustomizable color palettes for post-processing (for example as image from Lospec)
 
-## Demo:
-You can look at demo [here](https://bonenaut7.wtf/gdxpsx.mp4)
-
-# Install
+# Installation
 1. Add JitPack repository in your root build.gradle at the end of repositories:
 ```
 allprojects {
