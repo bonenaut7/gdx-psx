@@ -6,6 +6,8 @@
 graphics with few simple steps!
 If you have questions or suggestions for this project, or you want to just chat about it - welcome to our [discord](https://discord.gg/2FqQQxyFS8).
 
+_Disclaimer: May not work without GLSL ES >2 support, if you have any issues with it - please report it to me in Discord!_
+
 ## 3D Features:
 - Vertex Snapping (Vertex Jitter)
 - Texture Affine Mapping
@@ -31,7 +33,7 @@ allprojects {
     }
     ext {
         ...
-        gdxpsxVersion = '1.0.1'
+        gdxpsxVersion = '1.0.2'
     }
 }
 ```
