@@ -1,5 +1,6 @@
 package by.bonenaut7.gdxpsx.g3d;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -54,6 +55,13 @@ public class PSXShaderProvider extends BaseShaderProvider {
 					this.config.fragmentShader = Gdx.files.classpath("by/bonenaut7/gdxpsx/shaders/litpixel.frag").readString();
 				} break;
 			}
+		}
+		
+		// Re: LostStarInteractive issue with Linux-based OS, requiring GLSL version header on desktop
+		if (Gdx.app.getType() == ApplicationType.Desktop) {
+			final String prefix = "#version 120\n";
+			this.config.vertexShader = prefix + this.config.vertexShader;
+			this.config.fragmentShader = prefix + this.config.fragmentShader;
 		}
 	}
 

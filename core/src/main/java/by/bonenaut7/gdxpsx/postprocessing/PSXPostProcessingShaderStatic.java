@@ -2,6 +2,7 @@ package by.bonenaut7.gdxpsx.postprocessing;
 
 import java.util.Locale;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
@@ -53,6 +54,13 @@ public final class PSXPostProcessingShaderStatic extends PSXPostProcessingShader
 	
 	private String createDefinitions() {
 		final StringBuilder builder = new StringBuilder();
+		
+		// Re: LostStarInteractive issue with Linux-based OS, requiring GLSL version header on desktop
+		// I'm not sure now if dithering is gonna work on any embedded systems, since it requires at least GLSL 1.2
+		if (Gdx.app.getType() == ApplicationType.Desktop) {
+			builder.append("#version 120\n");
+		}
+		
 		// In-built input resolution
 		builder.append(String.format(Locale.US, "#define INPUT_RESOLUTION vec2(%.4f, %.4f)\n", this.inputResolution.x, this.inputResolution.y));
 		

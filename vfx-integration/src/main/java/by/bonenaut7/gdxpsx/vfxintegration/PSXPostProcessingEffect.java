@@ -1,6 +1,7 @@
 package by.bonenaut7.gdxpsx.vfxintegration;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.effects.AbstractVfxEffect;
 import com.crashinvaders.vfx.effects.ChainVfxEffect;
@@ -15,9 +16,12 @@ public class PSXPostProcessingEffect extends AbstractVfxEffect implements ChainV
 	private final PSXPostProcessingShader shader;
 	
 	public PSXPostProcessingEffect() {
+		// Re: LostStarInteractive issue with Linux-based OS, requiring GLSL version header on desktop
+		final String prefix = Gdx.app.getType() == ApplicationType.Desktop ? "#version 120" : "";
+		
 		this.shader = new PSXPostProcessingShaderStatic(
-			Gdx.files.classpath("by/bonenaut7/gdxpsx/shaders/postprocessing.notransform.vert").readString(),
-			Gdx.files.classpath("by/bonenaut7/gdxpsx/shaders/postprocessing.static.frag").readString()
+			prefix + Gdx.files.classpath("by/bonenaut7/gdxpsx/shaders/postprocessing.notransform.vert").readString(),
+			prefix + Gdx.files.classpath("by/bonenaut7/gdxpsx/shaders/postprocessing.static.frag").readString()
 		);
 		
 		this.rebind();
