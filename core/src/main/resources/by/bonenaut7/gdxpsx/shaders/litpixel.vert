@@ -208,6 +208,7 @@ void main() {
 	#else
 		v_position = u_worldTrans * vec4(a_position, 1.0);
 	#endif //skinningFlag
+	
 	gl_Position = u_projViewTrans * v_position;
 
 	//[GDX-PSX]======================================================================================
@@ -240,7 +241,7 @@ void main() {
 	#endif //normalFlag
 	
 	#ifdef shadowMapFlag
-		vec4 spos = u_shadowMapProjViewTrans * pos;
+		vec4 spos = u_shadowMapProjViewTrans * v_position;
 		v_shadowMapUv.xyz = (spos.xyz / spos.w) * 0.5 + 0.5;
 		v_shadowMapUv.z = min(v_shadowMapUv.z, 0.998);
 	#endif //shadowMapFlag
