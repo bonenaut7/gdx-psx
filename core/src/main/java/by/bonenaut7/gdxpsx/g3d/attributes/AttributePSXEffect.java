@@ -6,8 +6,6 @@ import com.badlogic.gdx.math.MathUtils;
 public class AttributePSXEffect extends Attribute {
 	public static final String vertexSnappingAlias = "psxVertexSnapping";
 	public static final long vertexSnapping = register(vertexSnappingAlias);
-	//public static final String textureJitterAlias = "psxTextureJitter";
-	//public static final long textureJitter = register(textureJitterAlias);
 	public static final String textureAffineMappingAlias = "psxTextureAffineMapping";
 	public static final long textureAffineMapping = register(textureAffineMappingAlias);
 	
@@ -33,16 +31,23 @@ public class AttributePSXEffect extends Attribute {
 	}
 	
 	public AttributePSXEffect set(float strength) {
-		if (this.type == vertexSnapping) this.strength = Math.min(0.01F, strength);
-		else if (this.type == textureAffineMapping) this.strength = MathUtils.clamp(strength, 0, 1);
-		else this.strength = strength;
+		if (this.type == vertexSnapping) {
+			this.strength = Math.min(0.01F, strength);
+		} else if (this.type == textureAffineMapping) {
+			this.strength = MathUtils.clamp(strength, 0, 1);
+		} else {
+			this.strength = strength;
+		}
+		
 		return this;
 	}
 	
+	@Override
 	public Attribute copy() {
 		return new AttributePSXEffect(this.type, this.strength);
 	}
 
+	@Override
 	public int compareTo(Attribute attribute) {
 		return (int)(this.type - attribute.type);
 	}

@@ -33,6 +33,7 @@ public final class PSXPostProcessingShaderStatic extends PSXPostProcessingShader
 		
 		final String definitions = this.createDefinitions();
 		this.shaderProgram = new ShaderProgram(definitions + this.vertexShader, definitions + this.fragmentShader);
+		
 		if (!this.shaderProgram.isCompiled()) {
 			Gdx.app.error("GDX-PSX", "Unable to compile shader, shader log:\n" + this.shaderProgram.getLog());
 			Gdx.app.error("GDX-PSX", "\n" + definitions + this.fragmentShader);

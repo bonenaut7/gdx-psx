@@ -43,17 +43,22 @@ public class PSXShaderProvider extends BaseShaderProvider {
 	 *  @param config - Shader config **/
 	public PSXShaderProvider(PSXShaderType shaderType, final DefaultShader.Config config) {
 		this.config = config == null ? new DefaultShader.Config() : config;
-		if ((this.config.vertexShader == null || this.config.fragmentShader == null) && shaderType == null) shaderType = PSXShaderType.LIT_PerFragmentLighting;
+		
+		if ((this.config.vertexShader == null || this.config.fragmentShader == null) && shaderType == null) {
+			shaderType = PSXShaderType.LIT_PerFragmentLighting;
+		}
+		
 		if (shaderType != null) {
 			switch (shaderType) {
-				case LIT_PerVertexLighting: {
+				case LIT_PerVertexLighting:
 					this.config.vertexShader = Gdx.files.classpath("by/bonenaut7/gdxpsx/shaders/litvertex.vert").readString();
 					this.config.fragmentShader = Gdx.files.classpath("by/bonenaut7/gdxpsx/shaders/litvertex.frag").readString();
-				} break;
-				case LIT_PerFragmentLighting: {
+				break;
+				
+				case LIT_PerFragmentLighting:
 					this.config.vertexShader = Gdx.files.classpath("by/bonenaut7/gdxpsx/shaders/litpixel.vert").readString();
 					this.config.fragmentShader = Gdx.files.classpath("by/bonenaut7/gdxpsx/shaders/litpixel.frag").readString();
-				} break;
+				break;
 			}
 		}
 		

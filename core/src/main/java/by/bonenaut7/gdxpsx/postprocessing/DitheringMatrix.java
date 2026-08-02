@@ -1,7 +1,5 @@
 package by.bonenaut7.gdxpsx.postprocessing;
 
-import java.util.Locale;
-
 public class DitheringMatrix {
 	// Predefined matrices
 	public static final DitheringMatrix BAYER_2x2 = new DitheringMatrix(2, 2, generateBayerMatrix(1));
